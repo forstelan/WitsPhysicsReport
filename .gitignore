@@ -1,0 +1,12 @@
+# System Files
+.DS_Store
+
+# LaTex Auxilliary files
+.aux
+.auxlock
+.idx
+.ilg
+.ind
+.log
+.out
+.toc
