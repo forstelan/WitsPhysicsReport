@@ -1,0 +1,572 @@
+%% --------------------------------------------------------------------------------------------------
+% Document Metadata
+\def\fileversion{0.2}
+\def\filedate{12 June 2015}
+\typeout{Document Style Option 'WitsPhysicsReportUtil' -- Ver. \fileversion\space Released \filedate}
+\typeout{Written by Warren Carlson}
+
+%% --------------------------------------------------------------------------------------------------
+% Document graphics
+\RequirePackage[usenames,dvipsnames]{xcolor}
+\RequirePackage{eso-pic}
+\RequirePackage{subfig}
+\RequirePackage{epsfig}
+
+% Automated for loops
+\RequirePackage{pgffor}
+
+%% Plotting
+\RequirePackage{pgfplots}
+\RequirePackage{pstricks}
+\RequirePackage{tikz}
+
+% Tables
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+\RequirePackage{pgfplotstable}
+\RequirePackage{filecontents}
+\RequirePackage{flafter}
+
+\RequirePackage{fp} % Allows fixed point mathematics
+\RequirePackage{caption} % Allows captions outside of floats
+
+% ----------------------------------------------------------------------------------------------------
+% Subdirectory relative path
+\gdef\datadirectory{data/} %
+\gdef\tikzdirectory{tikz/} %
+\gdef\imagedirectory{images/} %
+\gdef\picturedirectory{pictures/} %
+
+%% ----------------------------------------------------------------------------------------------------
+% SI Units
+\usepackage{siunitx}
+
+\sisetup{ %
+    tight-spacing = true, %
+    input-open-uncertainty = , %
+    input-close-uncertainty = , %
+    round-mode = places, %
+    round-precision = 3, %
+    table-align-text-pre = false%
+    }
+
+% --------------------------------------------------------------------------------------------------
+% PGFPLOT settings
+\pgfplotsset{compat=newest} % Use the latest compatability version.  Allows to place the legend below plot
+\usepgfplotslibrary{units} % Allows to enter the units nicely
+\usepgfplotslibrary{external} % Allows external processing of graphics
+\usetikzlibrary{pgfplots.external} % Allows external processing of graphics
+\usetikzlibrary{calc}
+
+% \tikzexternalize[optimize = true]
+\tikzsetexternalprefix{tikz/}
+\tikzset{external/up to date check={md5}}
+\tikzset{external/mode=convert with system call}
+
+\pgfplotsset{custom_regular_plot_style/.style = { %
+        axis on top, %
+        legend cell align=left, %
+        legend style = {draw = none,%
+                        fill = none}, %
+        legend pos = north west,%
+        width = 0.9 * \textwidth,%
+        height = 0.9 * (9.0 / 16.0) * \textwidth,%
+        enlarge x limits = false,%
+        xtick pos = left, %
+        ytick pos = left, %
+        clip = false, %
+        every extra x tick/.style = {%
+            font = \footnotesize, %
+            xtick pos = right, %
+            xticklabel pos = right, %
+            }, %
+        every extra y tick/.style = {%
+            font = \footnotesize, %
+            ytick pos = right, %
+            yticklabel pos = right, %
+            }, %
+        }
+    }
+
+\pgfplotsset{custom_wide_plot_style/.style={ %
+        axis on top, %
+        legend cell align=left, %
+        legend style = {draw = none,%
+                        fill = none}, %
+        legend pos = north west, %
+        height = 0.8 * \textwidth, %
+        width = 0.8 * (16.0 / 9.0) * \textwidth, %
+        enlarge x limits = false, %
+        clip = false, %
+        every extra x tick/.style = {%
+            font = \footnotesize, %
+            xticklabel pos = upper, %
+            }, %
+        every extra y tick/.style = {%
+            font = \footnotesize, %
+            yticklabel pos = upper, %
+            }, %
+        }
+    }
+
+\pgfplotsset{custom_line_marker_style/.style={ %
+        dashed, %
+        mark = none, %
+        opacity = 0.05, %
+        draw = gray, %
+        }
+    }
+
+% ----------------------------------------------------------------------------------------------------
+% Data Point Marker
+\tikzset{ %
+    every pin/.style={ %
+        pin distance = 4ex, %
+        },
+    }
+
+%% Add data plot pin and marker.
+%% 1 - label
+%% 2 - pin x-coordinate
+%% 3 - pin y-coordinate
+\newcommand{\AddLabel}[3]{ %
+    \node[coordinate, pin = {[rotate=90]right:{#1}}] at (axis cs:#2, #3) {};
+    }
+
+%% Add vertical line marker
+%% 2 - marker x-coordinate
+\newcommand{\AddVerticalMarker}[1]{ %
+    \draw[dashed, mark = none, opacity = 0.05, draw = gray] ({axis cs:#1,0}|-{rel axis cs:0,0}) -- ({axis cs:#1,0}|-{rel axis cs:0,1}) node[anchor = south]{#1};
+    }
+
+%% Add horizontal line marker
+%% 2 - marker y-coordinate
+\newcommand{\AddHorizontalMarker}[1]{ %
+    \draw[dashed, mark = none, opacity = 0.05, draw = gray] ({rel axis cs:0,0}|-{axis cs:0,#1}) -- ({rel axis cs:1,0}|-{axis cs:1,#1}) node[anchor = west]{#1};
+    }
+
+% ----------------------------------------------------------------------------------------------------
+% Plot Plain Data
+
+%% Plot data from csv data file with lines.
+%% 1 - data file name
+%% 2 - legend entry
+\newcommand{\AddDataLines}[2]{ %
+    \addplot+[mark=none] gnuplot[raw gnuplot]{ %
+        set datafile separator ",";
+        stats "\datadirectory#1" u 1:2 nooutput;
+        plot "\datadirectory#1" using 1:2;
+        };
+    \addlegendentry{#2}
+    }
+
+%% Plot data from csv data file with points.
+%% 1 - data file name
+%% 2 - legend entry
+\newcommand{\AddDataPoints}[2]{ %
+    \addplot+[only marks, mark=*, mark options = {scale = 0.15}] gnuplot[raw gnuplot]{ %
+        set datafile separator ",";
+        stats "\datadirectory#1" u 1:2 nooutput;
+        plot "\datadirectory#1" using 1:2;
+        };
+    \addlegendentry{#2}
+    }
+
+%% ----------------------------------------------------------------------------------------------------
+% Data Smoothing
+
+%% Plot data using a three point shifting mean and with threshold and approximated cubic spline smoothing.
+%% 1 - data file name
+%% 2 - legend entry
+%% 3 - threshold
+\newcommand{\AddThreePointMeanThresholdSmoothing}[3]{ %
+    \addplot+[line width=0.1em, mark = none, smooth] gnuplot[raw gnuplot] { %
+        set datafile separator ",";
+        b1 = 0; b2 = 0; b3 = 0; mu = 0; N = 0;
+        samples(x) = x > 2 ? 3 : (x + 1);
+        shift(x) = (b3 = b2, b2 = b1, b1 = x);
+        avg(n) = (b1 + b2 + b3) / n;
+        update(x, y) = (N = samples(x), shift(y), mu = avg(N));
+        smooth(x, y) = ( abs(y -  mu) ) > #3 ? mu : (update(x, y), y);
+        plot "\datadirectory#1" using 1:(smooth($0, $2)) smooth acspline;
+        };
+    \addlegendentry{Smoothed #2}
+    }
+
+%% Plot data using a six point shifting mean and with threshold and approximated cubic spline smoothing.
+%% 1 - data file name
+%% 2 - legend entry
+%% 3 - threshold
+\newcommand{\AddSixPointMeanThresholdSmoothing}[3]{ %
+    \addplot+[line width=0.1em, mark=none, smooth] gnuplot[raw gnuplot] { %
+        set datafile separator ",";
+        b1 = 0; b2 = 0; b3 = 0; b4 = 0; b5 = 0; b6 = 0; mu = 0; N = 0;
+        samples(x) = x > 5 ? 6 : (x + 1);
+        shift(x) = (b6 = b5, b5 = b4, b4 = b3, b3 = b2, b2 = b1, b1 = x);
+        avg(n) = (b1 + b2 + b3 + b4 + b5 + b6) / n;
+        update(x, y) = (N = samples(x), shift(y), mu = avg(N));
+        smooth(x, y) = ( abs(y -  mu) ) > #3 ? mu : (update(x, y), y);
+        plot "\datadirectory#1" using 1:(smooth($0, $2)) smooth acspline;
+        };
+    \addlegendentry{Smoothed #2}
+    }
+
+%% ----------------------------------------------------------------------------------------------------
+% Linear Regression
+
+% file suffixes
+\gdef\oneparamregsuffix{.one.parameter.regression} %
+\gdef\oneparamreglogsuffix{\oneparamregsuffix.log} %
+\gdef\twoparamregsuffix{.two.parameter.regression} %
+\gdef\twoparamreglogsuffix{\twoparamregsuffix.log} %
+
+%% Generate linear regression plot from csv data file.
+%% Fits the function y(x) = a x
+%% 1 - data file name
+\newcommand{\AddOneParameterLinearRegression}[1]{ %
+    \addplot+[line width=0.1em, mark=none] gnuplot[raw gnuplot] { %
+        set print "\tikzdirectory#1\oneparamregsuffix";
+        set fit logfile "\tikzdirectory#1\oneparamreglogsuffix";
+        set fit errorvariables;
+        set datafile separator ",";
+        a = 1.0;
+        f(x) = a * x;
+        fit f(x) "\datadirectory#1" using 1:2 via a;
+        stats "\datadirectory#1" u 1:2 nooutput;
+        padding_x = 0.1 * (STATS_max_x - STATS_min_x);
+        padding_y = 0.1 * (STATS_max_y - STATS_min_y);
+        set xrange [(STATS_min_x - padding_x) : (STATS_max_x + padding_x)];
+        set yrange [(STATS_min_y - padding_y) : (STATS_max_y + padding_y)];
+        print sprintf("Parameter, Value, Error, Fractional Error");
+        print sprintf("a, \%g, \%g, \%g", a, a_err, a_err / a);
+        plot f(x);
+        };
+    \pgfplotstableread[header = true, col sep = comma]{\tikzdirectory#1\oneparamregsuffix} {\parameters} % Open the file Gnuplot wrote
+    \pgfplotstablegetelem{0}{[index]1}\of\parameters \pgfmathsetmacro\paramA{\pgfplotsretval} % Get first element, save into \paramA
+    \addlegendentry{fit $f(x) = \pgfmathprintnumber{\paramA} x$}
+    }
+
+%% Generate linear regression plot from csv data file
+%% Fits the function y(x) = a x + b
+%% 1 - data file name
+\newcommand{\AddTwoParameterLinearRegression}[1]{ %
+    \addplot+[line width=0.1em, mark=none] gnuplot[raw gnuplot] { %
+        set print "\tikzdirectory#1\twoparamregsuffix";
+        set fit logfile "\tikzdirectory#1\twoparamreglogsuffix";
+        set fit errorvariables;
+        set datafile separator ",";
+        a = 1.0;
+        b = 1.0;
+        f(x) = a * x + b;
+        fit f(x) "\datadirectory#1" using 1:2 via a, b;
+        stats "\datadirectory#1" u 1:2 nooutput;
+        padding_x = 0.1 * (STATS_max_x - STATS_min_x);
+        padding_y = 0.1 * (STATS_max_y - STATS_min_y);
+        set xrange [(STATS_min_x - padding_x) : (STATS_max_x + padding_x)];
+        set yrange [(STATS_min_y - padding_y) : (STATS_max_y + padding_y)];
+        print sprintf("Parameter, Value, Error, Fractional Error");
+        print sprintf("a, \%g, \%g, \%g", a, a_err, a_err / a);
+        print sprintf("b, \%g, \%g, \%g", b, b_err, b_err / b);
+        plot f(x);
+        };
+    \pgfplotstableread[header = true, col sep = comma, print sign]{\tikzdirectory#1\twoparamregsuffix} {\parameters} % Open the file Gnuplot wrote
+    \pgfplotstablegetelem{0}{[index]1}\of\parameters \pgfmathsetmacro{\paramA}{\pgfplotsretval} % Get first element, save into \paramA
+    \pgfplotstablegetelem{1}{[index]1}\of\parameters \pgfmathsetmacro{\paramB}{\pgfplotsretval} % Get second element, save into \paramB
+    \addlegendentry{fit $f(x) = \pgfmathprintnumber{\paramA} x \pgfmathprintnumber[print sign = true]{\paramB}$}
+    }
+
+%% ----------------------------------------------------------------------------------------------------
+% Plot Collections
+
+%% Add data lines with marker labels.
+%% 1 - reference label
+%% 2 - caption
+%% 4 - X-axis units
+%% 5 - Y-axis label
+%% 6 - Y-axis units
+%% 7 - plot list
+\newcommand{\PlotCollection}[7]{ %
+    \begin{center}
+        \begin{figure}[!ht]
+            \tikzsetnextfilename{#1}
+            \begin{tikzpicture}
+                \begin{axis}[%
+                        custom_regular_plot_style, %
+                        enlarge y limits = {abs value = 22mm, upper}, %
+                        xlabel = #3, %
+                        x unit = #4, %
+                        ylabel = #5, %
+                        y unit = #6, %
+                    ]
+                    #7 \relax
+                \end{axis}
+            \end{tikzpicture}
+            \caption{\label{fig:#1}#2}
+        \end{figure}
+    \end{center}
+    }
+
+%% Plot a collection of data and markers with x-axis in log scale (base 10).
+%% 1 - reference label
+%% 2 - caption
+%% 3 - X-axis label
+%% 4 - X-axis units
+%% 5 - Y-axis label
+%% 6 - Y-axis units
+%% 7 - plot list
+\newcommand{\PlotCollectionSemiLogScaleX}[7]{ %
+    \begin{center}
+        \begin{figure}[!ht]
+            \tikzsetnextfilename{#1}
+            \begin{tikzpicture}
+                \begin{semilogxaxis}[%
+                        custom_regular_plot_style, %
+                        enlarge y limits = {abs value = 22mm, upper}, %
+                        xlabel = #3, %
+                        x unit = #4, %
+                        ylabel = #5, %
+                        y unit = #6, %
+                    ]
+                    #7 \relax
+                \end{semilogxaxis}
+            \end{tikzpicture}
+            \caption{\label{fig:#1}#2}
+        \end{figure}
+    \end{center}
+    }
+
+%% Plot a collection of data and markers with y-axis in log scale (base 10).
+%% 1 - reference label
+%% 2 - caption
+%% 3 - X-axis label
+%% 4 - X-axis units
+%% 5 - Y-axis label
+%% 6 - Y-axis units
+%% 7 - plot list
+\newcommand{\PlotCollectionSemiLogScaleY}[7]{ %
+    \begin{center}
+        \begin{figure}[!ht]
+            \tikzsetnextfilename{#1}
+            \begin{tikzpicture}
+                \begin{semilogyaxis}[%
+                        custom_regular_plot_style, %
+                        enlarge y limits = {abs value = 22mm, upper}, %
+                        xlabel = #3, %
+                        x unit = #4, %
+                        ylabel = #5, %
+                        y unit = #6, %
+                    ]
+                    #7 \relax
+                \end{semilogyaxis}
+            \end{tikzpicture}
+            \caption{\label{fig:#1}#2}
+        \end{figure}
+    \end{center}
+    }
+
+%% Plot a collection of data and markers with x-axis and y-axis in log scale (base 10).
+%% 1 - reference label
+%% 2 - caption
+%% 3 - X-axis label
+%% 4 - X-axis units
+%% 5 - Y-axis label
+%% 6 - Y-axis units
+%% 7 - plot list
+\newcommand{\PlotCollectionLogLogScale}[7]{ %
+    \begin{center}
+        \begin{figure}[!ht]
+            \tikzsetnextfilename{#1}
+            \begin{tikzpicture}
+                \begin{loglogaxis}[%
+                        custom_regular_plot_style, %
+                        enlarge y limits = {abs value = 22mm, upper}, %
+                        xlabel = #3, %
+                        x unit = #4, %
+                        ylabel = #5, %
+                        y unit = #6, %
+                    ]
+                    #7 \relax
+                \end{loglogaxis}
+            \end{tikzpicture}
+            \caption{\label{fig:#1}#2}
+        \end{figure}
+    \end{center}
+    }
+
+%% ----------------------------------------------------------------------------------------------------
+% Plot Data
+
+%% --------------------------------------------------
+%% Add data with line.
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+\newcommand{\PlotDataLines}[8]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataLines{#1}{#4} } }
+\newcommand{\PlotDataLinesLogLogScale}[8]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataLines{#1}{#4} } }
+\newcommand{\PlotDataLinesSemiLogScaleX}[8]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataLines{#1}{#4} } }
+\newcommand{\PlotDataLinesSemiLogScaleY}[8]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataLines{#1}{#4} } }
+
+%% --------------------------------------------------
+%% Add data with line.
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+\newcommand{\PlotDataPoints}[8]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataPoints{#1}{#4} } }
+\newcommand{\PlotDataPointsLogLogScale}[8]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataPoints{#1}{#4} } }
+\newcommand{\PlotDataPointsSemiLogScaleX}[8]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataPoints{#1}{#4} } }
+\newcommand{\PlotDataPointsSemiLogScaleY}[8]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataPoints{#1}{#4} } }
+
+%% --------------------------------------------------
+%% Add data lines with marker labels
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+%% 9 - marker labels
+\newcommand{\PlotLabelledDataLine}[9]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8} { \AddDataLines{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledDataLineLogLogScale}[9]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8} { \AddDataLines{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledDataLineSemiLogScaleX}[9]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataLines{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledDataLineSemiLogScaleY}[9]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataLines{#1}{#4} #9 \relax } }
+
+%% --------------------------------------------------
+%% Add data points with smooth line and vertical marker
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+%% 9 - marker labels
+\newcommand{\PlotSmoothLabelledDataPoints}[9]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
+\newcommand{\PlotSmoothLabelledDataPointsLogLogScale}[9]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
+\newcommand{\PlotSmoothLabelledDataPointsSemiLogScaleX}[9]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
+\newcommand{\PlotSmoothLabelledDataPointsSemiLogScaleY}[9]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
+
+%% --------------------------------------------------
+%% Plot linear regression of csv file data.
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+
+% fit y(x) = a x
+\newcommand{\PlotOneParameterLinearRegression}[8] {\PlotCollection{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddOneParameterLinearRegression{#1} } }
+% fit y(x) = a x + b
+\newcommand{\PlotTwoParameterLinearRegression}[8] {\PlotCollection{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddTwoParameterLinearRegression{#1} } }
+
+%% ----------------------------------------------------------------------------------------------------
+% Tabulated Data
+
+%% Tabulate linear regression of csv file data.
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+\newcommand{\TabulateRegressionData}[3]{ %
+    \begin{table}[!ht]
+        \begin{center}
+            \caption{\label{tab:#2}#3}
+            \pgfplotstabletypeset[%
+                col sep = comma, %
+                columns = {Parameter, Value, Error, Fractional Error}, %
+                fixed zerofill,%
+                header = has colnames, %
+                multicolumn names, %
+                precision = 3, %
+                print sign, %
+                sci, %
+                columns/Parameter/.style = {string type}, %
+                columns/Value/.style = { %
+                    string type, %
+                    column type = {S[scientific-notation = true]}}, %
+                columns/Error/.style = { %
+                    string type, %
+                    column type = {S[scientific-notation = true]}}, %
+                columns/Fractional Error/.style = { %
+                    string type, %
+                    column type = {S[scientific-notation = true]}}, %
+                every head row/.style = { %
+                    before row = \toprule,%
+                    after row = \midrule}, %
+                every last row/.style = { %
+                    after row=\bottomrule} %
+            ]{\tikzdirectory#1}
+        \end{center}
+    \end{table}
+    }
+
+%% Tabulate csv file data with custom column header labels
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - column headers labells
+\newcommand{\TabulateData}[4]{ %
+    \begin{table}[!ht]
+        \begin{center}
+            \caption{\label{tab:#2}#3}
+            \pgfplotstabletypeset[ %
+                header = false,
+                col sep = comma, %
+                multicolumn names, %
+                precision = 3, %
+                every head row/.style = { %
+                    output empty row,
+                    before row = {%
+                        \toprule
+                        #4 \\
+                        },%
+                    after row = \midrule, %
+                    }, %
+                every last row/.style = { %
+                    after row=\bottomrule, %
+                    }, %
+                display columns/.style = { %
+                    string type, %
+                    column type = {S[scientific-notation = true]}, %
+                    }, %
+            ]{\datadirectory#1}
+        \end{center}
+    \end{table}
+    }
+
+%% ----------------------------------------------------------------------------------------------------
+% Print Image
+
+%% Add a picture
+%% 1 - image file name
+%% 2 - reference label
+%% 3 - caption
+\newcommand{\PrintImage}[3]{ %
+    \begin{center}
+        \begin{figure}[!ht]
+            \centering
+            \includegraphics[%
+                height = 0.5625\textwidth, %
+                keepaspectratio, %
+            ]{\picturedirectory#1}
+            \caption{\label{fig:#2}#3}
+        \end{figure}
+    \end{center}
+    }
+
+%% --------------------------------------------------
+%% EOF
