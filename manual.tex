@@ -1,0 +1,643 @@
+\documentclass[10pt, a4paper, oneside]{article}
+%------------------------------------------------------------
+% Using WitsPhysicsReportUtil style
+\usepackage{WitsPhysicsReportUtil}
+\RequirePackage{fullpage}
+\RequirePackage{amsmath,amsthm,amsfonts,amssymb}
+\RequirePackage[%
+    ocgcolorlinks, %
+    linkcolor = blue, %
+    urlcolor = blue, %
+	citecolor = blue, %
+    pageanchor = true,%
+    hyperindex = true, %
+    breaklinks = true, %
+    pagebackref = false, %
+    linktocpage = true, %
+    pdfhighlight = /P]{hyperref}
+
+%------------------------------------------------------------
+% Comment out this directive only once data plots have been satisfactorilly generated.
+\tikzexternalize
+
+%------------------------------------------------------------
+% Add bibliography to table of contents
+\usepackage[nottoc]{tocbibind}
+% Bibliography Style
+\usepackage{plain}
+
+%------------------------------------------------------------
+% Index
+\usepackage{makeidx}
+\makeindex
+
+%------------------------------------------------------------
+% Prevent breaks and hyphenation
+\brokenpenalty=10000
+\widowpenalty=10000
+\clubpenalty=10000
+\interfootnotelinepenalty=10000 % Prevents footnotes being split onto two pages
+\hyphenpenalty=10000
+\hbadness=10000
+
+%------------------------------------------------------------
+% Source Code Markup
+\usepackage{textcomp}
+\usepackage[formats]{listings}
+\lstloadlanguages{[LaTeX]{TeX}}
+
+% source code placeholed markup
+\def\placeholder{\color{RubineRed}\textlangle\bgroup\it\aftergroup\endplaceholder}
+\def\endplaceholder{\textrangle\egroup}
+
+% general markup options
+\lstset{%
+    backgroundcolor = \color{gray!10}, %
+    basicstyle = \footnotesize\upshape\ttfamily, %
+    breakatwhitespace = true, %
+    commentstyle = \color[rgb]{0.2, 0.6, 0.3}, %
+    extendedchars = true, %
+    identifierstyle = {\bfseries}, %
+    keywordstyle = {\color{blue}\bfseries}, %
+    language = TeX, %
+    morecomment=[l][keywordstyle4]{\#}, %
+    moredelim = **[is][\placeholder]{<}{>},
+    morekeywords = { %
+        begin, %
+        bibliography, %
+        documentclass, %
+        end, %
+        ref, %
+        tikzexternalize, %
+        tikzpicture, %
+        usepackage, %
+        %
+        CourseCode, %
+        CourseName, %
+        StudentEmail, %
+        StudentName, %
+        StudentNumber, %
+        Title, %
+        %
+        maketitle, %
+        %
+        LogLogScale, %
+        SemiLogScaleX, %
+        SemiLogScaleY, %
+        %
+        AddLabel, %
+        AddVerticalMarker, %
+        AddHorizontalMarker, %
+        %
+        AddDataLines, %
+        AddDataPoints, %
+        AddThreePointMeanThresholdSmoothing, %
+        %
+        AddOneParameterLinearRegression, %
+        AddTwoParameterLinearRegression, %
+        %
+        PlotCollection, %
+        PlotCollectionLogLogScale, %
+        PlotCollectionSemiLogScaleX, %
+        PlotCollectionSemiLogScaleY, %
+        %
+        PlotCollectionLogLogScale, %
+        PlotCollectionSemiLogScaleX, %
+        PlotCollectionSemiLogScaleY, %
+        %
+        PlotDataLines, %
+        PlotDataLinesLogLogScale, %
+        PlotDataLinesSemiLogScaleX, %
+        PlotDataLinesSemiLogScaleY, %
+        %
+        PlotDataPoints, %
+        PlotDataPointsLogLogScale, %
+        PlotDataPointsSemiLogScaleX, %
+        PlotDataPointsSemiLogScaleY, %
+        %
+        PlotLabelledDataLine, %
+        PlotLabelledDataLineLogLogScale, %
+        PlotLabelledDataLineSemiLogScaleX, %
+        PlotLabelledDataLineSemiLogScaleY, %
+        %
+        PlotOneParameterLinearRegression, %
+        PlotTwoParameterLinearRegression, %
+        %
+        PlotSmoothLabelledDataLine, %
+        PlotSmoothLabelledDataLineLogLogScale, %
+        PlotSmoothLabelledDataLineSemiLogScaleX, %
+        PlotSmoothLabelledDataLineSemiLogScaleY, %
+        %
+        PlotSmoothLabelledDataPoints, %
+        PlotSmoothLabelledDataPointsLogLogScale, %
+        PlotSmoothLabelledDataPointsSemiLogScaleX, %
+        PlotSmoothLabelledDataPointsSemiLogScaleY, %
+        %
+        PrintImage, %
+        %
+        TabulateData, %
+        TabulateRegressionData, %
+        }, %
+    stringstyle = \color[rgb]{1.0, 0.0, 0.0}, %
+    tabsize = 4, %
+    upquote = true, %
+    }
+
+%------------------------------------------------------------
+% Name convenience commands
+\newcommand{\WitsPhysicsReport}{\textrm{\textsc{WitsPhysicsReport}}\,}
+\newcommand{\WitsPhysicsReportUtil}{\textrm{\textsc{WitsPhysicsReportUtil}}\,}
+\newcommand{\pgfplots}{\href{http://pgfplots.sourceforge.net}{\textsc{pgfplots}} \index{\textsc{pgfplots}}}
+\newcommand{\gnuplot}{\href{http://www.gnuplot.info}{\textsc{gnuplot}} \index{\textsc{gnuplot}}}
+
+%------------------------------------------------------------
+% Document details
+\author{Warren~A.~Carlson}
+\title{Manual for \WitsPhysicsReport}
+
+% ------------------------------------------------------------
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document demonstrates usage of the \WitsPhysicsReport package for undergraduate report \LaTeX-markup at the School of Physics at the University of the Witwatersrand, Johannesburg.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+\label{sec:Introduction}
+
+\par{The School of Physics has created a \LaTeX{} template designed to be used for undergraduate reports. This template is under development and newer versions will be made available from time to time.  These updates will include newer and more refined styling and functions. The template and this document describing the template were inspired by and borrow from the School of Mechanical, Industrial \& Aeronautical Engineering report and thesis Template at the University of the Wiwatersrand, written by Randal T. Paton.}
+
+\par{The \WitsPhysicsReport document class provides a template which specifies page and margin formatting, paragraph spacing, font sizes and types, colouring and element numbering. Document details may be set using a collection of convenience macros. Once these document details are set, a standard report title page is generated, with supporting report preamble contents such as tables of contents, lists of figures and tables and so on. Reports generated with \WitsPhysicsReport are subject to the following limitations,
+    \begin{enumerate}
+        \item{Documents must comprise fewer than 16 pages including the title page, preamble pages and bibliography.  This is a hard page limit.  Any document exceeding this limit will fail to compile and the system will throw a package error.}
+        \item{Additional packages may be used except when inclusion of these packages causes any conflict with those packages already included by \WitsPhysicsReport.}
+    \end{enumerate}
+}
+
+\par{The \WitsPhysicsReportUtil utility package can generate high-quality data plots and tabulations, and provides consistant font size, and figure and tabular appearance and formatting. Simple data visualisation, presentation and formatting are systematised for documents generated with the \\ \WitsPhysicsReportUtil. This package makes use of \pgfplots and \gnuplot methods and uses human readable, comma separated value data files to quickly and easily generate documents. This package provides macros for data plotting, smoothing and labelling, and tabulation. Convenience macros are also available to add content to reports. Reports generated with \WitsPhysicsReportUtil are subject to the following limitations,
+    \begin{enumerate}
+        \item{Data files passed to convenience macros must be properly formatted comma separated value files which satisfy the internal structure requirements of the macro which uses them.}
+        \item{Convenience macro parameter lists must be completed in full to function correctly.}
+        \item{A unique, whitespace free, character string value must be provided to any macro specifying a reference label as an input.}
+    \end{enumerate}
+Macros provided by this package are for convenience purposes and users are encouraged to make use of the \pgfplots package used by \WitsPhysicsReport to generate document contests. The document class and utility package may be used together or separately for document preparation.}
+
+\subsection{Basic Package}
+\label{sec:Basic_Package}
+
+\par{The School of Physics report template is setup for the preparation of short reports and assignments.  With the exception of some required packages, this template has been prepared to be mostly software system agnostic. This system, although using the \LaTeX{} document markup and generation system, need not be used with any specific \LaTeX{} development environents or other external software packages or system.  Simple, human readable, comma separated value files and images with common file formats are used to generate document graphical contents.}
+
+\par{The \WitsPhysicsReport contains the \WitsPhysicsReport document class template and \\ \WitsPhysicsReportUtil utility package and university logo.  The template contained within the package comprises a document class file \lstinline{WitsPhysicsReport.cls} and a university logo file.  The utility package is contained in the style file \lstinline{WitsPhysicsReportUtil.sty}. These files should be kept in the same direcory as the main document \lstinline{.tex} file is located}
+
+\subsection{Prerequisites}
+\label{sec:Prerequisites}
+
+\par{\WitsPhysicsReport document class requires only a working \LaTeX{} distribution to be installed. The utility package \WitsPhysicsReportUtil requires a working \LaTeX{} distribution with the \pgfplots package and \gnuplot to be installed. The \pgfplots package is used to assign plotting parameters.  The actual plot generation handled by \gnuplot which must be installed separately. \gnuplot may be installed in various ways on different systems (installation instructions for \pgfplots and \gnuplot are outside the scope of this document).  \pgfplots is available as part of the \LaTeX{} document generation system, and at \href{http://pgfplots.sourceforge.net}{http://pgfplots.sourceforge.net}.  \gnuplot is available at \href{http://www.gnuplot.info}{http://www.gnuplot.info}.}
+
+\par{To ensure that \LaTeX{} is able to make use of \gnuplot during compilation, the \gnuplot command line executable must be available in the system path. This can be set at installation time on most systems.  Additionally, the \lstinline{-shell-escape} option must be added to the \LaTeX{} compilation command.  This con be done within a development environment if one chooses to use one, or on the command-line interface for command line execution. An example of such a command-line execution command is shown below,
+\begin{lstlisting}
+    pdflatex -shell-escacpe document.tex
+\end{lstlisting}
+where \lstinline{pdflatex} is the standard PDF \LaTeX{} compilation command and \lstinline{document.tex} is the \TeX/\LaTeX{} document to compile.}
+
+\subsection{Basic Usage}
+\label{sec:Basic Usage}
+
+\par{The \WitsPhysicsReport package requires no explicit installation to the \TeX/\LaTeX{} system, and may be used by simply copying the contents of th package into the  main \lstinline{.tex} file to be processed. Then, adding the directive
+\begin{lstlisting}
+    \documentclass{WitsPhysicsReport}
+\end{lstlisting}
+to the document preamble will make the \WitsPhysicsReport package available to the system during document compilation.  The \WitsPhysicsReportUtil package is made available for use by adding the directive
+\begin{lstlisting}
+    \usepackage{WitsPhysicsReportUtil}
+\end{lstlisting}
+to the document preamble. }
+
+\subsection{Configuring for Use}
+\label{sec:Configuring_for_Use}
+
+\par{Once the \WitsPhysicsReport is assigned as the \lstinline{documentclass} is the preamble of the \lstinline{.tex} document, specific details of the document may be set using a collection of helper macros. Title page details must be set before the \lstinline{\maketitle} command is called to generate the title page correctly. Details of the commands used to assign title page details are given below.}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\Title{<title>}| \index{Details!Title}}
+        \par{Assign the document title as \lstinline{<title>}.  If the document title is not set then the following error message is replaced for the document title, \textcolor{red}{PLEASE~ENTER~A~REPORT~TITILE}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\CourseCode{<code>}| \index{Details!Course Code}}
+        \par{Assign the course code as \lstinline{<code>}.  If the course code is not set then the following error message is replaced for the course code, \textcolor{red}{PLEASE~ENTER~THE~COURSE~CODE}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\CourseName{<name>}| \index{Details!Course Name}}
+        \par{Assign the course name as \lstinline{<name>}.  If the course name is not set then the following error message is replaced for the course name, \textcolor{red}{PLEASE~ENTER~THE~COURSE~NAME}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\StudentName{<name>}| \index{Details!Student Name}}
+        \par{Assign the student name as \lstinline{<name>}.  If the student name is not set then the following error message is replaced for the student name, \textcolor{red}{PLEASE~ENTER~YOUR~NAME}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\StudentNumber{<number>}| \index{Details!Student Number}}
+        \par{Assign the student number as \lstinline{<number>}.  If the student number is not set then the following error message is replaced for the student number, \textcolor{red}{PLEASE~ENTER~YOUR~STUDENT~NUMBER}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\StudentEmail{<address>}| \index{Details!Student Email}}
+        \par{Assign the email address as \lstinline{<address>}.  If the email address is not set then the following error message is replaced for the email address, \textcolor{red}{PLEASE~ENTER~YOUR~EMAIL~ADDRESS}.}
+% ----------
+\end{description}
+
+\par{The preamble be generated by adding the directive \lstinline{\maketitle} to the main \lstinline{.tex} document immediatly following the \lstinline|\begin{document}| directive as in the example below.}
+
+\begin{lstlisting}
+\documentclass{WitsPhysicsReport}
+\usepackage{WitsPhysicsReportUtil}
+
+\Title{X-Ray Diffraction}
+\CourseCode{PHYS3006}
+\CourseName{Experimental Physics III}
+\StudentName{Joe Nobody}
+\StudentNumber{1234567890}
+\StudentEmail{fake.em@il.com}
+
+\begin{document}
+
+\maketitle
+
+...
+
+\bibliography{bibliography}
+\end{document}
+\end{lstlisting}
+
+\section{Pictures and Graphics}
+\label{sec:Pictures and Graphics}
+
+\par{It is common to add images, diagrams and photographs to documents. These elements can be added using the convenience macros provided by \WitsPhysicsReportUtil package. Correct usage of these macros is described below.}
+
+\par{All image files processed by this package should be placed in a directory named \lstinline{pictures} in the directory containing the main \lstinline{.tex} file to be processed. The following file type are acceptable \lstinline{.jpg}, \lstinline{.png}, \lstinline{.pdf}, \lstinline{.eps}.  Each picture added this way may be referenced within the \LaTeX{} document using \lstinline|\ref{fig:<refer>}| where \lstinline{<refer>} is the, \emph{whitespace free}, reference name supplied to the macro. The \lstinline{fig:} prefix is added to automatically to distinguish the referenced figure from other object references. }
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PrintImage{<image>}{<refer>}{<cap>}| \index{PrintImage}}
+        \par{Add the picture in the image file \lstinline{<image>} to the document.  This picture is referenced by \lstinline{<refer>} and has caption \lstinline{<cap>}. Images included this way have a fixed width to height ratio, where the maximum height of any image is set to 56\% of the textwidth.}
+% ----------
+\end{description}
+
+\par{The following code example generates the output shown in Figure~\ref{fig:rubber-duck}.}
+
+\begin{lstlisting}
+\PrintImage{rubber-duck.jpg}
+           {rubber-duck}
+           {This is \textsc{not} a duck.}
+\end{lstlisting}
+
+\par{In this example, the listed figure is cross-referenced using \lstinline|\ref{fig:rubber-duck}|.}
+
+\PrintImage{rubber-duck.jpg}
+           {rubber-duck}
+           {This is \textsc{not} a duck.}
+
+\section{Plotting Data}
+\label{sec:Plotting Data}
+
+\par{The \WitsPhysicsReport package contains a collection of two dimensional data visualisation convenience macros \index{Plot}.  Each macro has collection of parameters to customise the plot.  Plot parameters are determined from the data provided to the system.  In each case, data file names are passed to the desired macro and the macro generates the appropriate graph corresponding to the maximum and minimum range and domain of the data provided.  All data files processed by this package should be placed in a directory named \lstinline{data} in the directory containing the main \lstinline{.tex} file to be processed.}
+
+\par{Each figure generated using these macro may be referenced within the \LaTeX{} document using the \lstinline|\ref{fig:<refer>}| and where \lstinline{<refer>} is the, \emph{whitespace free}, reference name supplied to the macro. The \lstinline{fig:} prefix is added to automatically to distinguish the referenced figure from other object references. Tabulars generated this way may be similarly referenced using \lstinline{tab:<refer>}.}
+
+\par{Compilation time may be shortened by adding the \lstinline{\tikzexternalize} command macro to the preamble of the main \lstinline{.tex} file. This will instruct the system to generate figures as separate files which may then be included without regeneration.  Output files generated with \lstinline{\tikzexternalize} enabled take the name \lstinline{<refer>}. \WitsPhysicsReport will place these externally generated files in a subdirectory called \lstinline{tikz} in the directory containing the main \lstinline{.tex} file.}
+
+\subsection{Known Issues}
+\label{sec:Known_Issues}
+
+\par{The system will output files to the \lstinline{tikz} subdirectory when \lstinline{\tikzexternalize} is used.  This subdirectory is located in directory where the main \lstinline{.tex} file is found.  While some systems will automatically created this directory, some do not.  If this directory is missing, the system will generate a collection of errors stating that some files could not be written or read.  Creating this subdirectory will resolve this issue.}
+
+\par{The \LaTeX{} compiler may throw an error the first time it is run with the \lstinline{\tikzexternalize} directive. This occurs because the external execution directive evaluates all externall commands together. Some of these commands require the ouput files generated by other commands.  When these ouput files are not found, the system throws an error.  After the first run, many of these files will have been written. Running the compiler again will resolve this issue.}
+
+\subsection{Simple Plots}
+\label{sec:Simple_Plots}
+
+\par{The most commonly used set of convenience macros for data visualisation are presented below.  Each macro has a collection of parameters that must be set.  In each case only a single data set is plotted. Special axis scale modifier versions are available for each of the functions which allow for plotting on logarithmic scale axis.  Each such function is distinguished by suffix.  The \lstinline{SemiLogScaleX} suffix denotes logarithmic $x$-axis scale. The \lstinline{SemiLogScaleY} suffix denotes logarithmic $y$-axis scale. The \lstinline{LogLogScale} suffix denotes logarithmic $x$- and $y$-axis scales.}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotDataLines{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Data Lines}}
+        \par{Generate a line plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and has caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively. }
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotDataLinesLogLogScale} \index{Plot!Data Lines!LogLogScale}, \lstinline{\PlotDataLinesSemiLogScaleX} \index{Plot!Data Lines!Semi-Log Scale X}, \lstinline{\PlotDataLinesSemiLogScaleY} \index{Plot!Data Lines!Semi-Log Scale Y}}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotDataPoints{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Data Points}}
+        \par{Generate a scatter plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and hascaption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.}
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotDataPointsLogLogScale} \index{Plot!Data Points!Log-Log Scale}, \lstinline{\PlotDataPointsSemiLogScaleX} \index{Plot!Data Points!Semi-Log Scale X}, \lstinline{\PlotDataPointsSemiLogScaleY} \index{Plot!Data Points!Semi-Log Scale Y}.}
+% ----------
+\end{description}
+
+\par{The following code example generates the output shown in Figure~\ref{fig:plain-line-plot}.}
+
+\begin{lstlisting}
+\PlotDataLines{data-set-1.csv}
+              {plain-line-plot}
+              {Line Plot of Data set 1}
+              {Data}
+              {$2 \theta$}
+              {\si{\degree}}
+              {Intensity}
+              {counts}
+\end{lstlisting}
+
+\PlotDataLines{powder.csv}
+              {plain-line-plot}
+              {Line Plot of Data set 1}
+              {Data}
+              {$2 \theta$}
+              {\si{\degree}}
+              {Intensity}
+              {counts}
+
+\subsection{Decorated Plots}
+\label{sec:Decorated_Plots}
+
+\par{At times it is useful to add docorations to plots.  The \WitsPhysicsReport package makes available a collection of convinience macros to add labels and decorations to plots.}
+
+\subsubsection{Plot Decorations}
+\label{sec:Plot_Decorations}
+
+\par{Plot decorations are added using a collection of macros which add labelled horizontal and vertical markers and labels.  A synopsis of thes macros is given below.}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\AddLabel{<label>}{<x>}{<y>}| \index{Add!Label}}
+        \par{Adds a vertically alligned marker pin with vertically alligned text \lstinline{<label>} at the plot co-ordinate \lstinline{(<x>,<y>)}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\AddVerticalMarker{<label>}{<x>}| \index{Add!Marker!Vertical}}
+        \par{Adds a dashed line parallel to the $y$-axis at the $x$-axis co-ordinate \lstinline{<x>} and a $x$-axis label \lstinline{<label>}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\AddHorizontalMarker{<label>}{<y>}| \index{Add!Marker!Horizontal}}
+        \par{Adds a dashed line parallel to the $x$-axis at the $y$-axis co-ordinate \lstinline{<y>} and a $y$-axis label \lstinline{<label>}.}
+% ----------
+\end{description}
+
+\subsubsection{Simple Decorated Plots}
+\label{sec:Simple_Decorated_Plots}
+
+\par{A collection of convenience macros which add decorations to commonly used plotting macros is presented below. These macros can be added as parameters to the given macros as a list.  This list should comprise \lstinline{\AddLabel}, \lstinline{\AddHorizontalMarker} and \lstinline{\AddVerticalMarker} macros.
+}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotLabelledDataLine{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}{<markers>}| \index{Plot!Labelled Line}}
+        \par{Generate a line plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.  Additional decorations may be added to this plot in the \lstinline{<markers>} list parameter.}
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotLabelledDataLineLogLogScale} \index{Plot!Labelled Line!Log-Log Scale}, \lstinline{\PlotLabelledDataLineSemiLogScaleX} \index{Plot!Labelled Line!Semi-Log Scale X},
+            \\
+            \lstinline{\PlotLabelledDataLineSemiLogScaleY} \index{Plot!Labelled Line!Semi-Log Scale Y}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotSmoothLabelledDataPoints{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}{<markers>}| \index{Plot!Smooth Labelled Points}}
+        \par{Generate a scatter plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.  Additional decorations may be added to this plot in the \lstinline{<markers>} list parameter.}
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotSmoothLabelledDataPointsLogLogScale} \index{Plot!Smooth Labelled Points!Log-Log Scale}, \lstinline{\PlotSmoothLabelledDataPointsSemiLogScaleX} \index{Plot!Smooth Labelled Points!Semi-Log Scale X},
+            \\
+            \lstinline{\PlotSmoothLabelledDataPointsSemiLogScaleY} \index{Plot!Smooth Labelled Points!Semi-Log Scale Y}.}
+% ----------
+    \end{description}
+
+\par{The following code example generates the output shown in Figure~\ref{fig:semi-log-scale-y-plot}.}
+
+\begin{lstlisting}
+\PlotSmoothLabelledDataPointsSemiLogScaleY{data-set-2.csv}
+                                          {semi-log-scale-y-plot}
+                                          {Smooth and labelled data set plot}
+                                          {Data}
+                                          {$2 \theta$}
+                                          {\si{\degree}}
+                                          {Intensity}
+                                          {counts}
+                                          {
+                                              \AddVerticalMarker{8.4}
+                                              \AddHorizontalMarker{22}
+                                          }
+\end{lstlisting}
+
+\PlotSmoothLabelledDataPointsSemiLogScaleY{narrow-spectrum-30kV-no-filter.csv}
+                                          {semi-log-scale-y-plot}
+                                          {Smooth and labelled data set plot}
+                                          {Data}
+                                          {$2 \theta$}
+                                          {\si{\degree}}
+                                          {Intensity}
+                                          {counts}
+                                          {
+                                              \AddVerticalMarker{8.4}
+                                              \AddHorizontalMarker{22}
+                                          }
+
+\subsection{Advanced Data Plotting}
+\label{sec:Advanced Data Plotting}
+
+\par{More advanced plotting macros are described below.}
+
+\subsubsection{Plotting Trend Lines}
+\label{sec:Plotting_Trend_Lines}
+
+\par{Data plots with trend lines may be generated using two linear regression fitting convenience macros listed below.}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotOneParameterLinearRegression{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Linear Regression!One Parameter}}
+        \par{Generate a one parameter linear regression line plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotTwoParameterLinearRegression{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Linear Regression!Two Parameter}}
+        \par{Generate a one parameter linear regression line plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.}
+% ----------
+\end{description}
+
+\par{The following code example generates the output shown in Figure~\ref{fig:two-param-linear-regression}.}
+
+\begin{lstlisting}
+\PlotTwoParameterLinearRegression{data-set-3.csv}
+                                 {two-param-linear-regression}
+                                 {Two parameter linear regression plot.}
+                                 {Data}
+                                 {$\lambda^{-1}_{min}$}
+                                 {\si{\per\angstrom}}
+                                 {Potential}
+                                 {\si{\kilo\volt}}
+\end{lstlisting}
+
+\PlotTwoParameterLinearRegression{linear.csv}
+                                 {two-param-linear-regression}
+                                 {Two parameter linear regression plot.}
+                                 {Data}
+                                 {$\lambda^{-1}_{min}$}
+                                 {\si{\per\angstrom}}
+                                 {Potential}
+                                 {\si{\kilo\volt}}
+
+\subsubsection{Plotting Collections}
+\label{sec:Plotting Collections}
+
+\par{Elaborate collections of data and decorations may be plotted using the generic \lstinline{\PlotCollection} convenience macro. Special axis scale modifier versions are available for each of the functions which allow for plotting on logarithmic scale axis and are identified by the suffixes \lstinline{SemiLogScaleX}, \lstinline{SemiLogScaleY}, and \lstinline{LogLogScale}, as above.  Collections may be generated by assembling a list of components which are described in detail later in this note.}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotCollection{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}{<list>}| \index{Plot!Collection}}
+        \par{Plot a collection of graphs on a single axis.  The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and units, and $y$-axis label and unit specifications, respectively.  Decorations may be added to this plot in the \lstinline{<list>} list parameter. This list should comprise \lstinline{\AddLabel}, \lstinline{\AddHorizontalMarker} and \lstinline{\AddVerticalMarker} plot decorations, and \lstinline{\AddDataPoints}, \lstinline{\AddDataLines}, \lstinline{\AddOneParameterLinearRegression}, \lstinline{\AddTwoParameterLinearRegression}, and \lstinline{\AddThreePointMeanThresholdSmoothing}.}
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotCollectionLogLogScale} \index{Plot!Collection!Log-Log Scale}, \lstinline{\PlotCollectionSemiLogScaleX} \index{Plot!Collection!Semi-Log Scale X}, \lstinline{\PlotCollectionSemiLogScaleY} \index{Plot!Collection!Semi-Log Scale Y}.}
+% ----------
+\end{description}
+
+\par{Below is a list of macros that may be used to add additional graphs to plots. Each of these macros must be used within a \lstinline{tikzpicture} environment.  This environment is available within the set of convenience macros described above.  Each of these may be added to the a list of macros supplied to the \lstinline{<list>} parameter described above.}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\AddDataPoints{<dat>}{<legend>}| \index{Add!Points}}
+        \par{Adds a scatter plot of $x$ vs $y$ data in the data file \lstinline{<dat>} and has legend entry \lstinline{<legend>}. Data in this file are stored as two comma separated columns where the first and second columns comprise $x$-axis and $y$-axis data, respectively.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\AddDataLines{<dat>}{<legend>}| \index{Add!Line}}
+        \par{Adds a line plot of $x$ vs $y$ data in the data file \lstinline{<dat>} and has legend entry \lstinline{<legend>}. Data in this file are stored as two comma separated columns where the first and second columns comprise $x$-axis and $y$-axis data, respectively.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\AddThreePointMeanThresholdSmoothing{<dat>}{<limit>}| \index{Add!Line!Three Point Mean Threshold Smoothing}}
+        \par{Adds a three point shifting window with approximated cubic spline curve of $x$ vs $y$ data in the data file \lstinline{<dat>} where the threshold limit of the shifting window is \lstinline{<limit>}.  Data in this file are stored as two comma separated columns where the first and second columns comprise $x$-axis and $y$-axis data, respectively.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\AddOneParameterLinearRegression{<dat>}| \index{Add!Linear Regression!One Parameter}}
+        \par{Add a one parameter linear regression line plot of $x$ vs $y$ data in the datafile \lstinline{<dat>}. Data in this file are stored as two comma separated columns where the first and second columns comprise $x$-axis and $y$-axis data, respectively.  The legend entry is generated automatically as the fit function
+            \begin{equation*}
+                y(x) = a x.
+            \end{equation*}
+This tool generates two output files in the \lstinline{tikz} subdirectory. The values, errors and fractional errors for the parameter $a$ are written to the file \lstinline{<dat>.one.parameter.regression}. A log of the plotting data generation is written to the file \lstinline{<dat>.one.parameter.regression.log}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\AddTwoParameterLinearRegression{<dat>}| \index{Add!Linear Regression!Two Parameter}}
+        \par{Add a two parameter linear regression line plot of $x$ vs $y$ data in the datafile \lstinline{<dat>}. Data in this file are stored as two comma separated columns where the first and second columns comprise $x$-axis and $y$-axis data, respectively.  The legend entry is generated automatically as the fit function
+            \begin{equation*}
+                y(x) = a x + b.
+            \end{equation*}
+This tool generates two output files in the \lstinline{tikz} subdirectory. The values, errors and fractional errors for parameters $a$ and $b$ are written to the file \lstinline{<dat>.two.parameter.regression}. A log of the plotting data generation is written to the file \lstinline{<dat>two.parameter.regression.log}.}
+% ----------
+\end{description}
+
+\par{The following code example generates the output shown in Figure~\ref{fig:collection-log-scale-y}.}
+
+\begin{lstlisting}
+\PlotCollectionSemiLogScaleY{collection-log-scale-y}
+                {Decorated Data Plot Collection}
+                {$2 \theta$}
+                {\si{\degree}}
+                {Intensity}
+                {counts}
+                {
+                    \AddDataLines{data-set-4.csv}{Data Set 4}
+                    \AddDataPoints{data-set-5.csv}{Data Set 5}
+                    \AddThreePointMeanThresholdSmoothing{data-set-5.csv}{Data Set 5}{80}
+                    \AddVerticalMarker{32.81}
+                    \AddHorizontalMarker{30}
+                    \AddHorizontalMarker{50}
+                    \AddLabel{ $9.35$}{ 9.35}{ 59}
+                    \AddLabel{$23.77$}{23.77}{121}
+                    \AddLabel{$24.49$}{24.49}{151}
+                    \AddLabel{$26.63$}{26.63}{306}
+                    \AddLabel{$29.51$}{29.51}{342}
+                }
+\end{lstlisting}
+
+\PlotCollectionSemiLogScaleY{collection-log-scale-y}
+                            {Decorated Data Plot Collection}
+                            {$2 \theta$}
+                            {\si{\degree}}
+                            {Intensity}
+                            {counts}
+                            {%
+                                \AddDataLines{wide-spectrum-30kV-unknown-filter.csv}{Data Set 3}
+                                %
+                                \AddDataPoints{wide-spectrum-30kV-Nickle-filter.csv}{Data Set 4}
+                                \AddThreePointMeanThresholdSmoothing{wide-spectrum-30kV-Nickle-filter.csv}{Data Set 4}{80}
+                                %
+                                \AddVerticalMarker{32.81}
+                                %
+                                \AddHorizontalMarker{30}
+                                \AddHorizontalMarker{50}
+                                %
+                                \AddLabel{ $9.35$}{ 9.35}{ 59}
+                                \AddLabel{$23.77$}{23.77}{121}
+                                \AddLabel{$24.49$}{24.49}{151}
+                                \AddLabel{$26.63$}{26.63}{306}
+                                \AddLabel{$29.51$}{29.51}{342}
+                            }
+
+\section{Tabulating Data}
+\label{sec:Tabulating_Data}
+
+\par{The \WitsPhysicsReport provides two ways to include tabulated data.  In each case, data are read from a comma separated values file and presented in a tabular form.}
+
+\subsection{Tabulating Free Form Data}
+\label{sec:Tabulating_Free_Form_Data}
+
+\par{Semi-automatic tabulation of free form data may be achieved using the following convenience macros.}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\TabulateData{<dat>}{<refer>}{<cap>}{<cols>}| \index{Tabulate!Data}}
+        \par{Data in the multirow and multicolumn \lstinline{<datafile>}. The table is referenced by \lstinline{<reference>} and has caption \lstinline{<cap>}. Column headers with \LaTeX{} markup are added via the ampersand separated string in \lstinline{<cols>}.}
+% ----------
+\end{description}
+
+\par{Consider the data file \lstinline{free-form-table.csv} with the following free form contents.}
+
+\begin{lstlisting}
+1, 38.52, 0.1088,  2.9974,  3, 111
+2, 44.76, 0.1450,  3.9936,  4, 200
+3, 65.14, 0.2898,  7.9834,  8, 220
+4, 78.26, 0.3983, 10.9715, 11, 311
+5, 82.47, 0.4345, 11.9691, 12, 222
+6, 99.11, 0.5792, 15.9550, 16, 400
+\end{lstlisting}
+
+\par{The following code example tabulates the contents of \lstinline{free-form-table} with custom \LaTeX{} markup column header. The output of this shown in Table~\ref{tab:free-form-table}.}
+
+\begin{lstlisting}
+\TabulateData{free-form-table.csv}
+             {free-form-table}
+             {Free-Form data table}
+             {
+                 Peak &
+                 $2 \theta ( \si{\degree} )$ &
+                 $\sin{\theta}^{2}$ &
+                 $\frac{\sin{\theta}^{2}}{A}$ &
+                 $h^{2} + k^{2} + l^{2}$ &
+                 $(h k l)$
+             }
+\end{lstlisting}
+
+\TabulateData{patterns.csv}
+             {free-form-table}
+             {Free-Form data table}
+             {Peak & $2 \theta ( \si{\degree} )$ & $\sin{\theta}^{2}$ & $\frac{\sin{\theta}^{2}}{A}$ & $h^{2} + k^{2} + l^{2}$ & $(h k l)$}
+
+\subsection{Tabulating Regression Data}
+\label{sec:Tabulating_Regression_Data}
+
+\par{Regression plot data may be automatically tabulated. Data presented in the tabulated regression plot parameter tables are read from data files generated by the regression plot macros.  These files take the names provided to the \lstinline{<refer>} parameter in the regression plot macros with an additional suffix which identifies the corresponding regression model.}
+
+\begin{description}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\TabulateRegressionData{<dat>}{<refer>}{<cap>}| \index{Tabulate!Regression Data}}
+        \par{Tabulate linear regression data generated by \lstinline{\PlotOneParameterLinearRegression},
+            \\
+            \lstinline{\PlotTwoParameterLinearRegression}, \lstinline{\AddOneParameterLinearRegression} or
+            \\
+            \lstinline{\AddTwoParameterLinearRegression} commands for the data file \lstinline{<dat>}. The table is referenced by \lstinline{<refer>} and has caption \lstinline{<cap>}.}
+% ----------
+\end{description}
+
+\par{The data file provided as \lstinline{<dat>} in the \lstinline{\PlotTwoParameterLinearRegression} macro parameter list is \\ \lstinline{linear.csv}. This macro generates parameter output file with name \lstinline{linear.csv.two.parameter.regression} which is then passed as the \lstinline{<dat>} parameter in \lstinline{\TabulateRegressionData} macro in the code example. This code example generates the Table~\ref{tab:two-param-linear-regression}.}
+
+\begin{lstlisting}
+\TabulateRegressionData{linear.csv.two.parameter.regression}
+                       {two-param-linear-regression}
+                       {Two parameter linear regression data.}
+
+\end{lstlisting}
+
+\TabulateRegressionData{linear.csv.two.parameter.regression}
+                       {two-param-linear-regression}
+                       {Two parameter linear regression data.}
+
+\printindex
+
+\end{document}
+
+%% --------------------------------------------------
+%% EOF
