@@ -1,15 +1,15 @@
 %% --------------------------------------------------------------------------------------------------
 % Document Metadata
-\def\fileversion{0.1}
-\def\filedate{15 June 2015}
+\def\fileversion{0.2}
+\def\filedate{05 February 2017}
 \typeout{Document Style Option 'WitsPhysicsReport' -- Ver. \fileversion\space Released \filedate}
 \typeout{Written by Warren Carlson}
 
 %% ----------------------------------------------------------------------------------------------------
 % Supply 'WitsPhysicsReport' Class
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{WitsPhysicsReport}[2015/06/15
-    v0.1
+\ProvidesClass{WitsPhysicsReport}[2017/02/06
+    v0.2
     University of the Witwatersrand, School of Physics Undergraduate Report Class]
 
 %% Load base with options
@@ -27,7 +27,6 @@
 
 %% Process given options
 \ProcessOptions\relax
-
 
 %% ----------------------------------------------------------------------------------------------------
 % Table of contents formatting and structure
@@ -156,7 +155,8 @@
 % Institution data capture
 \newcommand{\School}{School of Physics}
 \newcommand{\University}{University of the Witwatersrand \\ \vspace*{1em} Johannesburg}
-\newcommand{\WitsCrest}{\includegraphics[width=0.35\textwidth]{WitsLogo.pdf}}
+%\newcommand{\WitsCrest}{\includegraphics[width=0.35\textwidth]{WitsLogo.pdf}}
+\newcommand{\WitsCrest}{\includegraphics[height=25em]{Wits_Logo.jpg}}
 
 % Start Title page valiable scoping
 \makeatletter
@@ -183,17 +183,17 @@
     \begin{titlepage}
         \begin{center}
             \textsc{\LARGE{\University}}\par
-            \vspace*{4em}
+            \vspace*{1em}
             \WitsCrest\par
-            \vspace*{4em}
-            \textbf{\Large{\School}}\par
-            \vspace*{4em}
-            \textbf{\Large{Assignment}}\par
             \vspace*{2em}
+            \textbf{\Large{\School}}\par
+            \vspace*{2em}
+            \textbf{\Large{Assignment}}\par
+                \vspace*{2em}
             \HRule
             \vspace*{4em}
             \textbf{\Large{\@title}}\par
-            \vspace*{2em}
+            \vspace*{1em}
             \HRule
         \end{center}
         \vspace*{\fill}
@@ -204,14 +204,14 @@
         \textbf{Email Address:}~\@studentemail\par
     \end{titlepage}
     \newpage
-    \pagenumbering{roman}
-    \tableofcontents
-    \newpage
-    \listoffigures
-    \newpage
-    \listoftables
-    \newpage
-    \pagenumbering{arabic}
+    %% \pagenumbering{roman}
+    %% \tableofcontents
+    %% \newpage
+    %% \listoffigures
+    %% \newpage
+    %% \listoftables
+    %% \newpage
+    %% \pagenumbering{arabic}
     }
 
 % End Title page variable scoping
