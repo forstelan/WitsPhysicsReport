@@ -18,7 +18,7 @@
 
 %------------------------------------------------------------
 % Comment out this directive only once data plots have been satisfactorilly generated.
-\tikzexternalize
+%\tikzexternalize
 
 %------------------------------------------------------------
 % Add bibliography to table of contents
@@ -89,8 +89,8 @@
         AddVerticalMarker, %
         AddHorizontalMarker, %
         %
-        AddDataLines, %
-        AddDataPoints, %
+        AddLines, %
+        AddPoints, %
         AddThreePointMeanThresholdSmoothing, %
         %
         AddOneParameterLinearRegression, %
@@ -105,33 +105,43 @@
         PlotCollectionSemiLogScaleX, %
         PlotCollectionSemiLogScaleY, %
         %
-        PlotDataLines, %
-        PlotDataLinesLogLogScale, %
-        PlotDataLinesSemiLogScaleX, %
-        PlotDataLinesSemiLogScaleY, %
+        PlotLines, %
+        PlotLinesLogLogScale, %
+        PlotLinesSemiLogScaleX, %
+        PlotLinesSemiLogScaleY, %
         %
-        PlotDataPoints, %
-        PlotDataPointsLogLogScale, %
-        PlotDataPointsSemiLogScaleX, %
-        PlotDataPointsSemiLogScaleY, %
+        PlotPoints, %
+        PlotPointsLogLogScale, %
+        PlotPointsSemiLogScaleX, %
+        PlotPointsSemiLogScaleY, %
         %
-        PlotLabelledDataLine, %
-        PlotLabelledDataLineLogLogScale, %
-        PlotLabelledDataLineSemiLogScaleX, %
-        PlotLabelledDataLineSemiLogScaleY, %
+        PlotBoxes, %
+        PlotBoxesLogLogScale, %
+        PlotBoxesSemiLogScaleX, %
+        PlotBoxesSemiLogScaleY, %
+        %
+        PlotSteps, %
+        PlotStepsLogLogScale, %
+        PlotStepsSemiLogScaleX, %
+        PlotStepsSemiLogScaleY, %
+        %
+        PlotLabelledLine, %
+        PlotLabelledLineLogLogScale, %
+        PlotLabelledLineSemiLogScaleX, %
+        PlotLabelledLineSemiLogScaleY, %
         %
         PlotOneParameterLinearRegression, %
         PlotTwoParameterLinearRegression, %
         %
-        PlotSmoothLabelledDataLine, %
-        PlotSmoothLabelledDataLineLogLogScale, %
-        PlotSmoothLabelledDataLineSemiLogScaleX, %
-        PlotSmoothLabelledDataLineSemiLogScaleY, %
+        PlotSmoothLabelledLine, %
+        PlotSmoothLabelledLineLogLogScale, %
+        PlotSmoothLabelledLineSemiLogScaleX, %
+        PlotSmoothLabelledLineSemiLogScaleY, %
         %
-        PlotSmoothLabelledDataPoints, %
-        PlotSmoothLabelledDataPointsLogLogScale, %
-        PlotSmoothLabelledDataPointsSemiLogScaleX, %
-        PlotSmoothLabelledDataPointsSemiLogScaleY, %
+        PlotSmoothLabelledPoints, %
+        PlotSmoothLabelledPointsLogLogScale, %
+        PlotSmoothLabelledPointsSemiLogScaleX, %
+        PlotSmoothLabelledPointsSemiLogScaleY, %
         %
         PrintImage, %
         %
@@ -200,7 +210,7 @@ Macros provided by this package are for convenience purposes and users are encou
 
 \par{To ensure that \LaTeX{} is able to make use of \gnuplot during compilation, the \gnuplot command line executable must be available in the system path. This can be set at installation time on most systems.  Additionally, the \lstinline{-shell-escape} option must be added to the \LaTeX{} compilation command.  This con be done within a development environment if one chooses to use one, or on the command-line interface for command line execution. An example of such a command-line execution command is shown below,
 \begin{lstlisting}
-    pdflatex -shell-escacpe document.tex
+pdflatex -shell-escacpe document.tex
 \end{lstlisting}
 where \lstinline{pdflatex} is the standard PDF \LaTeX{} compilation command and \lstinline{document.tex} is the \TeX/\LaTeX{} document to compile.}
 
@@ -209,11 +219,11 @@ where \lstinline{pdflatex} is the standard PDF \LaTeX{} compilation command and 
 
 \par{The \WitsPhysicsReport package requires no explicit installation to the \TeX/\LaTeX{} system, and may be used by simply copying the contents of th package into the  main \lstinline{.tex} file to be processed. Then, adding the directive
 \begin{lstlisting}
-    \documentclass{WitsPhysicsReport}
+\documentclass{WitsPhysicsReport}
 \end{lstlisting}
 to the document preamble will make the \WitsPhysicsReport package available to the system during document compilation.  The \WitsPhysicsReportUtil package is made available for use by adding the directive
 \begin{lstlisting}
-    \usepackage{WitsPhysicsReportUtil}
+\usepackage{WitsPhysicsReportUtil}
 \end{lstlisting}
 to the document preamble. }
 
@@ -300,6 +310,18 @@ to the document preamble. }
 
 \par{The \WitsPhysicsReport package contains a collection of two dimensional data visualisation convenience macros \index{Plot}.  Each macro has collection of parameters to customise the plot.  Plot parameters are determined from the data provided to the system.  In each case, data file names are passed to the desired macro and the macro generates the appropriate graph corresponding to the maximum and minimum range and domain of the data provided.  All data files processed by this package should be placed in a directory named \lstinline{data} in the directory containing the main \lstinline{.tex} file to be processed.}
 
+\par{Plot creation is then driven by \pgfplots and \gnuplot to produce high quality graphics for inclusion on \LaTeX{} documents.
+These plot are gerenated from data files with a specific format. Single data points are stored as tuples of values, separated by commas. A single tuple is written to a single line, such that that each row in the data file contains exactly one data point. The first column in such a data file contains the first co-ordinate of each tuple, the second column contains the second co-ordinate and so on, such that the $i$-th column contains a list of the $i$-th co-ordinate values. In this way, the $i$-th co-ordinate of the $j$-th data point is contained in the $i$-th column on the $j$-th row of the data file. An example of such a data file is presented below
+\begin{lstlisting}
+38.52, 0.1088,
+44.76, 0.1450,
+65.14, 0.2898,
+78.26, 0.3983,
+82.47, 0.4345,
+99.11, 0.5792,
+\end{lstlisting}
+}
+
 \par{Each figure generated using these macro may be referenced within the \LaTeX{} document using the \lstinline|\ref{fig:<refer>}| and where \lstinline{<refer>} is the, \emph{whitespace free}, reference name supplied to the macro. The \lstinline{fig:} prefix is added to automatically to distinguish the referenced figure from other object references. Tabulars generated this way may be similarly referenced using \lstinline{tab:<refer>}.}
 
 \par{Compilation time may be shortened by adding the \lstinline{\tikzexternalize} command macro to the preamble of the main \lstinline{.tex} file. This will instruct the system to generate figures as separate files which may then be included without regeneration.  Output files generated with \lstinline{\tikzexternalize} enabled take the name \lstinline{<refer>}. \WitsPhysicsReport will place these externally generated files in a subdirectory called \lstinline{tikz} in the directory containing the main \lstinline{.tex} file.}
@@ -318,37 +340,126 @@ to the document preamble. }
 
 \begin{description}
 % ----------
-    \item[\hspace{-1em}]{\lstinline|\PlotDataLines{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Data Lines}}
-        \par{Generate a line plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and has caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively. }
-        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotDataLinesLogLogScale} \index{Plot!Data Lines!LogLogScale}, \lstinline{\PlotDataLinesSemiLogScaleX} \index{Plot!Data Lines!Semi-Log Scale X}, \lstinline{\PlotDataLinesSemiLogScaleY} \index{Plot!Data Lines!Semi-Log Scale Y}}
-% ----------
-    \item[\hspace{-1em}]{\lstinline|\PlotDataPoints{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Data Points}}
+    \item[\hspace{-1em}]{\lstinline|\PlotPoints{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Points}}
         \par{Generate a scatter plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and hascaption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.}
-        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotDataPointsLogLogScale} \index{Plot!Data Points!Log-Log Scale}, \lstinline{\PlotDataPointsSemiLogScaleX} \index{Plot!Data Points!Semi-Log Scale X}, \lstinline{\PlotDataPointsSemiLogScaleY} \index{Plot!Data Points!Semi-Log Scale Y}.}
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotPointsLogLogScale} \index{Plot!Points!Log-Log Scale}, \lstinline{\PlotPointsSemiLogScaleX} \index{Plot!Points!Semi-Log Scale X}, \lstinline{\PlotPointsSemiLogScaleY} \index{Plot!Points!Semi-Log Scale Y}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotLines{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Lines}}
+        \par{Generate a line plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and has caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively. }
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotLinesLogLogScale} \index{Plot!Lines!LogLogScale}, \lstinline{\PlotLinesSemiLogScaleX} \index{Plot!Lines!Semi-Log Scale X}, \lstinline{\PlotLinesSemiLogScaleY} \index{Plot!Lines!Semi-Log Scale Y}}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotSteps{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Steps}}
+        \par{Generate a step plot histogram plot of pre-binned $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and hascaption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.}
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotStepsLogLogScale} \index{Plot!Steps!Log-Log Scale}, \lstinline{\PlotStepsSemiLogScaleX} \index{Plot!Steps!Semi-Log Scale X}, \lstinline{\PlotStepsSemiLogScaleY} \index{Plot!Steps!Semi-Log Scale Y}.}
+% ----------
+    \item[\hspace{-1em}]{\lstinline|\PlotBoxes{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}| \index{Plot!Boxes}}
+        \par{Generate a bar plot histogram plot of pre-binned of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and hascaption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.}
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotBoxesLogLogScale} \index{Plot!Boxes!Log-Log Scale}, \lstinline{\PlotBoxesSemiLogScaleX} \index{Plot!Boxes!Semi-Log Scale X}, \lstinline{\PlotBoxesSemiLogScaleY} \index{Plot!Boxes!Semi-Log Scale Y}.}
 % ----------
 \end{description}
 
-\par{The following code example generates the output shown in Figure~\ref{fig:plain-line-plot}.}
+%----------------------------------------------------------------------------------------------------
+\par{The following code example generates the output shown in Figure~\ref{fig:plain-points-plot}.
 
 \begin{lstlisting}
-\PlotDataLines{data-set-1.csv}
-              {plain-line-plot}
-              {Line Plot of Data set 1}
-              {Data}
-              {$2 \theta$}
-              {\si{\degree}}
-              {Intensity}
-              {counts}
+\PlotPoints{powder.csv}
+          {plain-points-plot}
+          {Scatterplot of data set.}
+          {Data}
+          {$2 \theta$}
+          {\si{\degree}}
+          {Intensity}
+          {counts}
 \end{lstlisting}
 
-\PlotDataLines{powder.csv}
-              {plain-line-plot}
-              {Line Plot of Data set 1}
-              {Data}
-              {$2 \theta$}
-              {\si{\degree}}
-              {Intensity}
-              {counts}
+\PlotPoints{powder.csv}
+          {plain-points-plot}
+          {Scatter plot of data set.}
+          {Data}
+          {$2 \theta$}
+          {\si{\degree}}
+          {Intensity}
+          {counts}
+}
+%----------------------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------------------
+\par{The following code example generates the output shown in Figure~\ref{fig:plain-boxes-plot}.
+
+\begin{lstlisting}
+\PlotSteps{normal-random.csv}
+          {plain-boxes-plot}
+          {Histogram box plot of data set.}
+          {Data}
+          {$x$}
+          {\si{\meter}}
+          {Count}
+          {counts}
+\end{lstlisting}
+
+\PlotSteps{normal-random.csv}
+          {plain-boxes-plot}
+          {Histogram box plot of data set.}
+          {Data}
+          {$x$}
+          {\si{\meter}}
+          {Count}
+          {counts}
+}
+%----------------------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------------------
+\par{The following code example generates the output shown in Figure~\ref{fig:plain-steps-plot}.
+
+\begin{lstlisting}
+\PlotSteps{random.csv}
+          {plain-steps-plot}
+          {Histogram step plot of data set.}
+          {Data}
+          {$x$}
+          {\si{\meter}}
+          {Count}
+          {counts}
+\end{lstlisting}
+
+\PlotSteps{random.csv}
+          {plain-step-plot}
+          {Histogram step plot of data set.}
+          {Data}
+          {$x$}
+          {\si{\meter}}
+          {Count}
+          {counts}
+}
+%----------------------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------------------
+%% \par{The following code example generates the output shown in Figure~\ref{fig:collection-histograms}.}
+%% %----------------------------------------------------------------------------------------------------
+%% \begin{lstlisting}
+%% \PlotCollection{collection-histograms}
+%%                {Collection of Histograms}
+%%                {$x$}
+%%                {\si{\meter}}
+%%                {Count}
+%%                {counts}
+%%                {%
+%%                    \AddSteps{normal-random.csv}{Steps}
+%%                    \AddBoxes{random.csv}{Boxes}
+%%                }
+%% \end{lstlisting}
+%%
+%% \PlotCollection{collection-histograms}
+%%                {Collection of Histograms}
+%%                {$x$}
+%%                {\si{\meter}}
+%%                {Count}
+%%                {counts}
+%%                {%
+%%                    \AddSteps{normal-random.csv}{Steps}
+%%                    \AddBoxes{random.csv}{Boxes}
+%%                }
+%----------------------------------------------------------------------------------------------------
 
 \subsection{Decorated Plots}
 \label{sec:Decorated_Plots}
@@ -381,49 +492,49 @@ to the document preamble. }
 
 \begin{description}
 % ----------
-    \item[\hspace{-1em}]{\lstinline|\PlotLabelledDataLine{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}{<markers>}| \index{Plot!Labelled Line}}
+    \item[\hspace{-1em}]{\lstinline|\PlotLabelledLine{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}{<markers>}| \index{Plot!Labelled Line}}
         \par{Generate a line plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.  Additional decorations may be added to this plot in the \lstinline{<markers>} list parameter.}
-        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotLabelledDataLineLogLogScale} \index{Plot!Labelled Line!Log-Log Scale}, \lstinline{\PlotLabelledDataLineSemiLogScaleX} \index{Plot!Labelled Line!Semi-Log Scale X},
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotLabelledLineLogLogScale} \index{Plot!Labelled Line!Log-Log Scale}, \lstinline{\PlotLabelledLineSemiLogScaleX} \index{Plot!Labelled Line!Semi-Log Scale X},
             \\
-            \lstinline{\PlotLabelledDataLineSemiLogScaleY} \index{Plot!Labelled Line!Semi-Log Scale Y}.}
+            \lstinline{\PlotLabelledLineSemiLogScaleY} \index{Plot!Labelled Line!Semi-Log Scale Y}.}
 % ----------
-    \item[\hspace{-1em}]{\lstinline|\PlotSmoothLabelledDataPoints{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}{<markers>}| \index{Plot!Smooth Labelled Points}}
+    \item[\hspace{-1em}]{\lstinline|\PlotSmoothLabelledPoints{<dat>}{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}{<markers>}| \index{Plot!Smooth Labelled Points}}
         \par{Generate a scatter plot of $x$ vs $y$ data in the data file \lstinline{<dat>}. The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and unit specifications, and $y$-axis label and unit specifications, respectively.  Additional decorations may be added to this plot in the \lstinline{<markers>} list parameter.}
-        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotSmoothLabelledDataPointsLogLogScale} \index{Plot!Smooth Labelled Points!Log-Log Scale}, \lstinline{\PlotSmoothLabelledDataPointsSemiLogScaleX} \index{Plot!Smooth Labelled Points!Semi-Log Scale X},
+        \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotSmoothLabelledPointsLogLogScale} \index{Plot!Smooth Labelled Points!Log-Log Scale}, \lstinline{\PlotSmoothLabelledPointsSemiLogScaleX} \index{Plot!Smooth Labelled Points!Semi-Log Scale X},
             \\
-            \lstinline{\PlotSmoothLabelledDataPointsSemiLogScaleY} \index{Plot!Smooth Labelled Points!Semi-Log Scale Y}.}
+            \lstinline{\PlotSmoothLabelledPointsSemiLogScaleY} \index{Plot!Smooth Labelled Points!Semi-Log Scale Y}.}
 % ----------
     \end{description}
 
-\par{The following code example generates the output shown in Figure~\ref{fig:semi-log-scale-y-plot}.}
+\par{The following code example generates the output shown in Figure~\ref{fig:narrow-spectrum-30kV-no-filter}.}
 
 \begin{lstlisting}
-\PlotSmoothLabelledDataPointsSemiLogScaleY{data-set-2.csv}
-                                          {semi-log-scale-y-plot}
-                                          {Smooth and labelled data set plot}
-                                          {Data}
-                                          {$2 \theta$}
-                                          {\si{\degree}}
-                                          {Intensity}
-                                          {counts}
-                                          {
-                                              \AddVerticalMarker{8.4}
-                                              \AddHorizontalMarker{22}
-                                          }
+\PlotSmoothLabelledPointsSemiLogScaleY{narrow-spectrum-30kV-no-filter.csv}
+                                      {narrow-spectrum-30kV-no-filter}
+                                      {Narrow Spectrum 30kV no Filter}
+                                      {Data}
+                                      {$2 \theta$}
+                                      {\si{\degree}}
+                                      {Intensity}
+                                      {counts}
+                                      {
+                                          \AddVerticalMarker{8.4}
+                                          \AddHorizontalMarker{22}
+                                      }
 \end{lstlisting}
 
-\PlotSmoothLabelledDataPointsSemiLogScaleY{narrow-spectrum-30kV-no-filter.csv}
-                                          {semi-log-scale-y-plot}
-                                          {Smooth and labelled data set plot}
-                                          {Data}
-                                          {$2 \theta$}
-                                          {\si{\degree}}
-                                          {Intensity}
-                                          {counts}
-                                          {
-                                              \AddVerticalMarker{8.4}
-                                              \AddHorizontalMarker{22}
-                                          }
+\PlotSmoothLabelledPointsSemiLogScaleY{narrow-spectrum-30kV-no-filter.csv}
+                                      {narrow-spectrum-30kV-no-filter}
+                                      {Narrow Spectrum 30kV no Filter}
+                                      {Data}
+                                      {$2 \theta$}
+                                      {\si{\degree}}
+                                      {Intensity}
+                                      {counts}
+                                      {
+                                          \AddVerticalMarker{8.4}
+                                          \AddHorizontalMarker{22}
+                                      }
 
 \subsection{Advanced Data Plotting}
 \label{sec:Advanced Data Plotting}
@@ -448,9 +559,9 @@ to the document preamble. }
 \par{The following code example generates the output shown in Figure~\ref{fig:two-param-linear-regression}.}
 
 \begin{lstlisting}
-\PlotTwoParameterLinearRegression{data-set-3.csv}
+\PlotTwoParameterLinearRegression{linear.csv}
                                  {two-param-linear-regression}
-                                 {Two parameter linear regression plot.}
+                                 {Two parameter linear regression data plot.}
                                  {Data}
                                  {$\lambda^{-1}_{min}$}
                                  {\si{\per\angstrom}}
@@ -460,7 +571,7 @@ to the document preamble. }
 
 \PlotTwoParameterLinearRegression{linear.csv}
                                  {two-param-linear-regression}
-                                 {Two parameter linear regression plot.}
+                                 {Two parameter linear regression data plot.}
                                  {Data}
                                  {$\lambda^{-1}_{min}$}
                                  {\si{\per\angstrom}}
@@ -475,7 +586,7 @@ to the document preamble. }
 \begin{description}
 % ----------
     \item[\hspace{-1em}]{\lstinline|\PlotCollection{<refer>}{<cap>}{<xlabel>}{<xunit>}{<ylabel>}{<yunit>}{<list>}| \index{Plot!Collection}}
-        \par{Plot a collection of graphs on a single axis.  The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and units, and $y$-axis label and unit specifications, respectively.  Decorations may be added to this plot in the \lstinline{<list>} list parameter. This list should comprise \lstinline{\AddLabel}, \lstinline{\AddHorizontalMarker} and \lstinline{\AddVerticalMarker} plot decorations, and \lstinline{\AddDataPoints}, \lstinline{\AddDataLines}, \lstinline{\AddOneParameterLinearRegression}, \lstinline{\AddTwoParameterLinearRegression}, and \lstinline{\AddThreePointMeanThresholdSmoothing}.}
+        \par{Plot a collection of graphs on a single axis.  The plot is referenced by \lstinline{<refer>} and caption \lstinline{<cap>}.  The parameters \lstinline{<xlabel>}, \lstinline{<xunit>}, \lstinline{<ylabel>} and \lstinline{<yunit>} are the $x$-axis label and units, and $y$-axis label and unit specifications, respectively.  Decorations may be added to this plot in the \lstinline{<list>} list parameter. This list should comprise \lstinline{\AddLabel}, \lstinline{\AddHorizontalMarker} and \lstinline{\AddVerticalMarker} plot decorations, and \lstinline{\AddPoints}, \lstinline{\AddLines}, \lstinline{\AddOneParameterLinearRegression}, \lstinline{\AddTwoParameterLinearRegression}, and \\ \lstinline{\AddThreePointMeanThresholdSmoothing}.}
         \par{\footnotesize{\emph{Modified:}} \lstinline{\PlotCollectionLogLogScale} \index{Plot!Collection!Log-Log Scale}, \lstinline{\PlotCollectionSemiLogScaleX} \index{Plot!Collection!Semi-Log Scale X}, \lstinline{\PlotCollectionSemiLogScaleY} \index{Plot!Collection!Semi-Log Scale Y}.}
 % ----------
 \end{description}
@@ -484,10 +595,10 @@ to the document preamble. }
 
 \begin{description}
 % ----------
-    \item[\hspace{-1em}]{\lstinline|\AddDataPoints{<dat>}{<legend>}| \index{Add!Points}}
+    \item[\hspace{-1em}]{\lstinline|\AddPoints{<dat>}{<legend>}| \index{Add!Points}}
         \par{Adds a scatter plot of $x$ vs $y$ data in the data file \lstinline{<dat>} and has legend entry \lstinline{<legend>}. Data in this file are stored as two comma separated columns where the first and second columns comprise $x$-axis and $y$-axis data, respectively.}
 % ----------
-    \item[\hspace{-1em}]{\lstinline|\AddDataLines{<dat>}{<legend>}| \index{Add!Line}}
+    \item[\hspace{-1em}]{\lstinline|\AddLines{<dat>}{<legend>}| \index{Add!Line}}
         \par{Adds a line plot of $x$ vs $y$ data in the data file \lstinline{<dat>} and has legend entry \lstinline{<legend>}. Data in this file are stored as two comma separated columns where the first and second columns comprise $x$-axis and $y$-axis data, respectively.}
 % ----------
     \item[\hspace{-1em}]{\lstinline|\AddThreePointMeanThresholdSmoothing{<dat>}{<limit>}| \index{Add!Line!Three Point Mean Threshold Smoothing}}
@@ -513,24 +624,24 @@ This tool generates two output files in the \lstinline{tikz} subdirectory. The v
 
 \begin{lstlisting}
 \PlotCollectionSemiLogScaleY{collection-log-scale-y}
-                {Decorated Data Plot Collection}
-                {$2 \theta$}
-                {\si{\degree}}
-                {Intensity}
-                {counts}
-                {
-                    \AddDataLines{data-set-4.csv}{Data Set 4}
-                    \AddDataPoints{data-set-5.csv}{Data Set 5}
-                    \AddThreePointMeanThresholdSmoothing{data-set-5.csv}{Data Set 5}{80}
-                    \AddVerticalMarker{32.81}
-                    \AddHorizontalMarker{30}
-                    \AddHorizontalMarker{50}
-                    \AddLabel{ $9.35$}{ 9.35}{ 59}
-                    \AddLabel{$23.77$}{23.77}{121}
-                    \AddLabel{$24.49$}{24.49}{151}
-                    \AddLabel{$26.63$}{26.63}{306}
-                    \AddLabel{$29.51$}{29.51}{342}
-                }
+                            {Decorated Data Plot Collection}
+                            {$2 \theta$}
+                            {\si{\degree}}
+                            {Intensity}
+                            {counts}
+    {
+    \AddLines{wide-spectrum-30kV-unknown-filter.csv}{Unknown}
+    \AddPoints{wide-spectrum-30kV-Nickle-filter.csv}{Ni}
+    \AddThreePointMeanThresholdSmoothing{wide-spectrum-30kV-Nickle-filter.csv}{Ni}{80}
+    \AddVerticalMarker{32.81}
+    \AddHorizontalMarker{30}
+    \AddHorizontalMarker{50}
+    \AddLabel{ $9.35$}{ 9.35}{ 59}
+    \AddLabel{$23.77$}{23.77}{121}
+    \AddLabel{$24.49$}{24.49}{151}
+    \AddLabel{$26.63$}{26.63}{306}
+    \AddLabel{$29.51$}{29.51}{342}
+    }
 \end{lstlisting}
 
 \PlotCollectionSemiLogScaleY{collection-log-scale-y}
@@ -539,17 +650,13 @@ This tool generates two output files in the \lstinline{tikz} subdirectory. The v
                             {\si{\degree}}
                             {Intensity}
                             {counts}
-                            {%
-                                \AddDataLines{wide-spectrum-30kV-unknown-filter.csv}{Data Set 3}
-                                %
-                                \AddDataPoints{wide-spectrum-30kV-Nickle-filter.csv}{Data Set 4}
-                                \AddThreePointMeanThresholdSmoothing{wide-spectrum-30kV-Nickle-filter.csv}{Data Set 4}{80}
-                                %
+                            {
+                                \AddLines{wide-spectrum-30kV-unknown-filter.csv}{Unknown}
+                                \AddPoints{wide-spectrum-30kV-Nickle-filter.csv}{Ni}
+                                \AddThreePointMeanThresholdSmoothing{wide-spectrum-30kV-Nickle-filter.csv}{Ni}{80}
                                 \AddVerticalMarker{32.81}
-                                %
                                 \AddHorizontalMarker{30}
                                 \AddHorizontalMarker{50}
-                                %
                                 \AddLabel{ $9.35$}{ 9.35}{ 59}
                                 \AddLabel{$23.77$}{23.77}{121}
                                 \AddLabel{$24.49$}{24.49}{151}
