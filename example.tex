@@ -9,7 +9,7 @@
 
 %------------------------------------------------------------
 % Comment out this directive only once data plots have been satisfactorilly generated.
-\tikzexternalize
+%\tikzexternalize
 
 %------------------------------------------------------------
 % Set Details
@@ -69,47 +69,47 @@
 
 \lipsum[11]
 
-\PlotSmoothLabelledDataPointsSemiLogScaleY{narrow-spectrum-25kV-no-filter.csv} % data file name
-                                          {narrow-spectrum-25kV-no-filter} % reference
-                                          {Narrow Spectrum 25kV no Filter} % caption
-                                          {Data} % legend entry
-                                          {$2 \theta$} % x-axis label
-                                          {\si{\degree}} % x-axis units
-                                          {Intensity} % y-axis label
-                                          {counts} % y-axis units
-                                          {%
-                                              \AddVerticalMarker{9.25} % vertical line marker
-                                              \AddHorizontalMarker{15} % horizontal line marker
-                                          }
+\PlotSmoothLabelledPointsSemiLogScaleY{narrow-spectrum-25kV-no-filter.csv} % data file name
+                                      {narrow-spectrum-25kV-no-filter} % reference
+                                      {Narrow Spectrum 25kV no Filter} % caption
+                                      {Data} % legend entry
+                                      {$2 \theta$} % x-axis label
+                                      {\si{\degree}} % x-axis units
+                                      {Intensity} % y-axis label
+                                      {counts} % y-axis units
+                                      {%
+                                          \AddVerticalMarker{9.25} % vertical line marker
+                                          \AddHorizontalMarker{15} % horizontal line marker
+                                      }
 
 
-\PlotSmoothLabelledDataPointsSemiLogScaleY{narrow-spectrum-30kV-no-filter.csv} % data file name
-                                          {narrow-spectrum-30kV-no-filter} % reference
-                                          {Narrow Spectrum 30kV no Filter} % caption
-                                          {Data} % legend entry
-                                          {$2 \theta$} % x-axis label
-                                          {\si{\degree}} % x-axis units
-                                          {Intensity} % y-axis label
-                                          {counts} % y-axis units
-                                          {%
-                                              \AddVerticalMarker{8.4} % vertical line marker
-                                              \AddHorizontalMarker{22} % horizontal line marker
-                                          }
+\PlotSmoothLabelledPointsSemiLogScaleY{narrow-spectrum-30kV-no-filter.csv} % data file name
+                                      {narrow-spectrum-30kV-no-filter} % reference
+                                      {Narrow Spectrum 30kV no Filter} % caption
+                                      {Data} % legend entry
+                                      {$2 \theta$} % x-axis label
+                                      {\si{\degree}} % x-axis units
+                                      {Intensity} % y-axis label
+                                      {counts} % y-axis units
+                                      {%
+                                          \AddVerticalMarker{8.4} % vertical line marker
+                                          \AddHorizontalMarker{22} % horizontal line marker
+                                      }
 
 \lipsum[13]
 
-\PlotSmoothLabelledDataPointsSemiLogScaleY{narrow-spectrum-35kV-no-filter.csv} % data file name
-                                          {narrow-spectrum-35kV-no-filter} % reference
-                                          {Narrow Spectrum 35kV no Filter} % caption
-                                          {Data} % legend entry
-                                          {$2 \theta$} % x-axis label
-                                          {\si{\degree}} % x-axis units
-                                          {Intensity} % y-axis label
-                                          {counts} % y-axis units
-                                          {%
-                                              \AddVerticalMarker{8.22} % vertical line marker
-                                              \AddHorizontalMarker{25} % horizontal line marker
-                                          }
+\PlotSmoothLabelledPointsSemiLogScaleY{narrow-spectrum-35kV-no-filter.csv} % data file name
+                                      {narrow-spectrum-35kV-no-filter} % reference
+                                      {Narrow Spectrum 35kV no Filter} % caption
+                                      {Data} % legend entry
+                                      {$2 \theta$} % x-axis label
+                                      {\si{\degree}} % x-axis units
+                                      {Intensity} % y-axis label
+                                      {counts} % y-axis units
+                                      {%
+                                          \AddVerticalMarker{8.22} % vertical line marker
+                                          \AddHorizontalMarker{25} % horizontal line marker
+                                      }
 
 \lipsum[14]
 
@@ -142,56 +142,56 @@
 
 \lipsum[19]
 
-\PlotLabelledDataLine{wide-spectrum-30kV-no-filter.csv} % data file nome
-                     {wide-spectrum-30kV-no-filter} % reference
-                     {Wide Spectrum 30kV no filter} % caption
-                     {No Filter} % legend entry
-                     {$2 \theta$} % x-axis label
-                     {\si{\degree}} % x-axis units
-                     {Intensity} % y-axis label
-                     {counts} % y-axis units
-                     {%
-                         \AddLabel{$10.67$}{10.67}{  853} % pin marker
-                         \AddLabel{$20.95$}{20.95}{  795} % pin marker
-                         \AddLabel{$23.75$}{23.75}{  600} % pin marker
-                         \AddLabel{$24.49$}{24.49}{  882} % pin marker
-                         \AddLabel{$26.61$}{26.61}{ 3745} % pin marker
-                         \AddLabel{$28.19$}{28.19}{  600} % pin marker
-                         \AddLabel{$29.47$}{29.47}{10140} % pin marker
-                     }
+\PlotLabelledLine{wide-spectrum-30kV-no-filter.csv} % data file nome
+                 {wide-spectrum-30kV-no-filter} % reference
+                 {Wide Spectrum 30kV no filter} % caption
+                 {No Filter} % legend entry
+                 {$2 \theta$} % x-axis label
+                 {\si{\degree}} % x-axis units
+                 {Intensity} % y-axis label
+                 {counts} % y-axis units
+                 {%
+                     \AddLabel{$10.67$}{10.67}{  853} % pin marker
+                     \AddLabel{$20.95$}{20.95}{  795} % pin marker
+                     \AddLabel{$23.75$}{23.75}{  600} % pin marker
+                     \AddLabel{$24.49$}{24.49}{  882} % pin marker
+                     \AddLabel{$26.61$}{26.61}{ 3745} % pin marker
+                     \AddLabel{$28.19$}{28.19}{  600} % pin marker
+                     \AddLabel{$29.47$}{29.47}{10140} % pin marker
+                 }
 
 \lipsum[20]
 
-\PlotLabelledDataLine{wide-spectrum-30kV-Nickle-filter.csv} % path to data file data
-                     {wide-spectrum-30kV-Nickle-filter} % figure reference
-                     {Wide Spectrum 30kV Nickle filter} % Figure caption
-                     {Ni Filter} % legend entry
-                     {$2 \theta$} % x-axis label
-                     {\si{\degree}} % x-axis units
-                     {Intensity} % y-axis label
-                     {counts} % y-axis units
-                     {%
-                         \AddLabel{$10.69$}{10.69}{ 449} % pin marker
-                         \AddLabel{$29.49$}{29.49}{1513} % pin marker
-                     }
+\PlotLabelledLine{wide-spectrum-30kV-Nickle-filter.csv} % path to data file data
+                 {wide-spectrum-30kV-Nickle-filter} % figure reference
+                 {Wide Spectrum 30kV Nickle filter} % Figure caption
+                 {Ni Filter} % legend entry
+                 {$2 \theta$} % x-axis label
+                 {\si{\degree}} % x-axis units
+                 {Intensity} % y-axis label
+                 {counts} % y-axis units
+                 {%
+                     \AddLabel{$10.69$}{10.69}{ 449} % pin marker
+                     \AddLabel{$29.49$}{29.49}{1513} % pin marker
+                 }
 
-\PlotLabelledDataLineSemiLogScaleY{wide-spectrum-30kV-unknown-filter.csv} % path to data file data
-                                  {wide-spectrum-30kV-unknown-filter} % figure reference
-                                  {Wide Spectrum 30kV unknown filter} % Figure caption
-                                  {Unknown Filter} % legend entry
-                                  {$2 \theta$} % x-axis label
-                                  {\si{\degree}} % x-axis units
-                                  {Intensity} % y-axis label
-                                  {counts} % y-axis units
-                                  {%
-                                      \AddLabel{$10.67$}{10.67}{625} % pin marker
-                                      \AddLabel{$23.77$}{23.77}{121} % pin marker
-                                      \AddLabel{$24.49$}{24.49}{151} % pin marker
-                                      \AddLabel{$26.63$}{26.63}{306} % pin marker
-                                      \AddLabel{$29.51$}{29.51}{342} % pin marker
-                                      \AddVerticalMarker{34.35} % vertical line marker
-                                      \AddHorizontalMarker{50} % horizontal line marker
-                                  }
+\PlotLabelledLineSemiLogScaleY{wide-spectrum-30kV-unknown-filter.csv} % path to data file data
+                              {wide-spectrum-30kV-unknown-filter} % figure reference
+                              {Wide Spectrum 30kV unknown filter} % Figure caption
+                              {Unknown Filter} % legend entry
+                              {$2 \theta$} % x-axis label
+                              {\si{\degree}} % x-axis units
+                              {Intensity} % y-axis label
+                              {counts} % y-axis units
+                              {%
+                                  \AddLabel{$10.67$}{10.67}{625} % pin marker
+                                  \AddLabel{$23.77$}{23.77}{121} % pin marker
+                                  \AddLabel{$24.49$}{24.49}{151} % pin marker
+                                  \AddLabel{$26.63$}{26.63}{306} % pin marker
+                                  \AddLabel{$29.51$}{29.51}{342} % pin marker
+                                  \AddVerticalMarker{34.35} % vertical line marker
+                                  \AddHorizontalMarker{50} % horizontal line marker
+                              }
 
 \lipsum[18]
 
@@ -200,20 +200,20 @@
 
 \lipsum[19]
 
-\PlotLabelledDataLine{powder.csv} % path to data file data
-                     {powder} % figure reference
-                     {Copper Powder XRD} % Figure caption
-                     {Data}
-                     {$2 \theta$} % x-axis label
-                     {\si{\degree}} % x-axis units
-                     {Intensity} % y-axis label
-                     {counts} % y-axis units
-                     {%
-                         \AddLabel{$43.35$}{43.35}{177} % pin marker
-                         \AddLabel{$50.43$}{50.43}{106} % pin marker
-                         \AddLabel{$73.97$}{73.97}{106} % pin marker
-                         \AddLabel{$89.83$}{89.83}{132} % pin marker
-                     }
+\PlotLabelledLine{powder.csv} % path to data file data
+                 {powder} % figure reference
+                 {Copper Powder XRD} % Figure caption
+                 {Data}
+                 {$2 \theta$} % x-axis label
+                 {\si{\degree}} % x-axis units
+                 {Intensity} % y-axis label
+                 {counts} % y-axis units
+                 {%
+                     \AddLabel{$43.35$}{43.35}{177} % pin marker
+                     \AddLabel{$50.43$}{50.43}{106} % pin marker
+                     \AddLabel{$73.97$}{73.97}{106} % pin marker
+                     \AddLabel{$89.83$}{89.83}{132} % pin marker
+                 }
 
 \lipsum[20]
 
