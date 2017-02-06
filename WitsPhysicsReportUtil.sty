@@ -18,6 +18,8 @@
 %% Plotting
 \RequirePackage{pgfplots}
 \RequirePackage{pstricks}
+%% \RequirePackage{pst-all}
+%% \RequirePackage{pstricks-add}
 \RequirePackage{tikz}
 
 % Tables
@@ -56,7 +58,23 @@
 \usepgfplotslibrary{units} % Allows to enter the units nicely
 \usepgfplotslibrary{external} % Allows external processing of graphics
 \usetikzlibrary{pgfplots.external} % Allows external processing of graphics
-\usetikzlibrary{calc}
+\usetikzlibrary{pgfplots.colorbrewer} % Use automatic assigned colour-scheme collections
+\usetikzlibrary{calc} %
+
+\pgfplotsset{
+    axis on top, % Draw axes over plots
+    legend cell align=left, %
+    legend style = {draw = none,%
+                    fill = none}, %
+    legend pos = north west,%
+    width = 0.9 * \textwidth,%
+    height = 0.9 * (9.0 / 16.0) * \textwidth,%
+    enlarge x limits = false,%
+    xtick pos = left, %
+    ytick pos = left, %
+    clip = false, %
+    cycle list/Set1, % Set global colour scheme cycle
+    }
 
 % \tikzexternalize[optimize = true]
 \tikzsetexternalprefix{tikz/}
@@ -64,17 +82,8 @@
 \tikzset{external/mode=convert with system call}
 
 \pgfplotsset{custom_regular_plot_style/.style = { %
-        axis on top, %
-        legend cell align=left, %
-        legend style = {draw = none,%
-                        fill = none}, %
-        legend pos = north west,%
         width = 0.9 * \textwidth,%
         height = 0.9 * (9.0 / 16.0) * \textwidth,%
-        enlarge x limits = false,%
-        xtick pos = left, %
-        ytick pos = left, %
-        clip = false, %
         every extra x tick/.style = {%
             font = \footnotesize, %
             xtick pos = right, %
@@ -84,27 +93,6 @@
             font = \footnotesize, %
             ytick pos = right, %
             yticklabel pos = right, %
-            }, %
-        }
-    }
-
-\pgfplotsset{custom_wide_plot_style/.style={ %
-        axis on top, %
-        legend cell align=left, %
-        legend style = {draw = none,%
-                        fill = none}, %
-        legend pos = north west, %
-        height = 0.8 * \textwidth, %
-        width = 0.8 * (16.0 / 9.0) * \textwidth, %
-        enlarge x limits = false, %
-        clip = false, %
-        every extra x tick/.style = {%
-            font = \footnotesize, %
-            xticklabel pos = upper, %
-            }, %
-        every extra y tick/.style = {%
-            font = \footnotesize, %
-            yticklabel pos = upper, %
             }, %
         }
     }
@@ -151,7 +139,7 @@
 %% Plot data from csv data file with lines.
 %% 1 - data file name
 %% 2 - legend entry
-\newcommand{\AddDataLines}[2]{ %
+\newcommand{\AddLines}[2]{ %
     \addplot+[mark=none] gnuplot[raw gnuplot]{ %
         set datafile separator ",";
         stats "\datadirectory#1" u 1:2 nooutput;
@@ -163,11 +151,35 @@
 %% Plot data from csv data file with points.
 %% 1 - data file name
 %% 2 - legend entry
-\newcommand{\AddDataPoints}[2]{ %
+\newcommand{\AddPoints}[2]{ %
     \addplot+[only marks, mark=*, mark options = {scale = 0.15}] gnuplot[raw gnuplot]{ %
         set datafile separator ",";
         stats "\datadirectory#1" u 1:2 nooutput;
         plot "\datadirectory#1" using 1:2;
+        };
+    \addlegendentry{#2}
+    }
+
+%% Plot data from csv data file with boxes.
+%% 1 - data file name
+%% 2 - legend entry
+\newcommand{\AddBoxes}[2]{ %
+    \addplot+[ybar interval, fill opacity=0.2, mark = none] gnuplot[raw gnuplot]{ %
+        set datafile separator ",";
+        stats "\datadirectory#1" u 1:2 nooutput;
+        plot "\datadirectory#1" u 1:2 with boxes;
+        };
+    \addlegendentry{#2}
+    }
+
+%% Plot data from csv data file with steps.
+%% 1 - data file name
+%% 2 - legend entry
+\newcommand{\AddSteps}[2]{ %
+    \addplot+[const plot, mark=none] gnuplot[raw gnuplot]{ %
+        set datafile separator ",";
+        stats "\datadirectory#1" u 1:2 nooutput;
+        plot "\datadirectory#1" u 1:2 with histeps;
         };
     \addlegendentry{#2}
     }
@@ -406,13 +418,13 @@
 %% 6 - X-axis units
 %% 7 - Y-axis label
 %% 8 - Y-axis units
-\newcommand{\PlotDataLines}[8]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataLines{#1}{#4} } }
-\newcommand{\PlotDataLinesLogLogScale}[8]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataLines{#1}{#4} } }
-\newcommand{\PlotDataLinesSemiLogScaleX}[8]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataLines{#1}{#4} } }
-\newcommand{\PlotDataLinesSemiLogScaleY}[8]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataLines{#1}{#4} } }
+\newcommand{\PlotLines}[8]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8}{ \AddLines{#1}{#4} } }
+\newcommand{\PlotLinesLogLogScale}[8]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8}{ \AddLines{#1}{#4} } }
+\newcommand{\PlotLinesSemiLogScaleX}[8]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8}{ \AddLines{#1}{#4} } }
+\newcommand{\PlotLinesSemiLogScaleY}[8]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8}{ \AddLines{#1}{#4} } }
 
 %% --------------------------------------------------
-%% Add data with line.
+%% Add data with points.
 %% 1 - data file name
 %% 2 - reference label
 %% 3 - caption
@@ -421,10 +433,40 @@
 %% 6 - X-axis units
 %% 7 - Y-axis label
 %% 8 - Y-axis units
-\newcommand{\PlotDataPoints}[8]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataPoints{#1}{#4} } }
-\newcommand{\PlotDataPointsLogLogScale}[8]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataPoints{#1}{#4} } }
-\newcommand{\PlotDataPointsSemiLogScaleX}[8]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataPoints{#1}{#4} } }
-\newcommand{\PlotDataPointsSemiLogScaleY}[8]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8}{ \AddDataPoints{#1}{#4} } }
+\newcommand{\PlotPoints}[8]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8}{ \AddPoints{#1}{#4} } }
+\newcommand{\PlotPointsLogLogScale}[8]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8}{ \AddPoints{#1}{#4} } }
+\newcommand{\PlotPointsSemiLogScaleX}[8]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8}{ \AddPoints{#1}{#4} } }
+\newcommand{\PlotPointsSemiLogScaleY}[8]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8}{ \AddPoints{#1}{#4} } }
+
+%% --------------------------------------------------
+%% Add data with boxes.
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+\newcommand{\PlotBoxes}[8]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8}{ \AddBoxes{#1}{#4} } }
+\newcommand{\PlotBoxesLogLogScale}[8]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8}{ \AddBoxes{#1}{#4} } }
+\newcommand{\PlotBoxesSemiLogScaleX}[8]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8}{ \AddBoxes{#1}{#4} } }
+\newcommand{\PlotBoxesSemiLogScaleY}[8]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8}{ \AddBoxes{#1}{#4} } }
+
+%% --------------------------------------------------
+%% Add data with steps.
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+\newcommand{\PlotSteps}[8]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8}{ \AddSteps{#1}{#4} } }
+\newcommand{\PlotStepsLogLogScale}[8]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8}{ \AddSteps{#1}{#4} } }
+\newcommand{\PlotStepsSemiLogScaleX}[8]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8}{ \AddSteps{#1}{#4} } }
+\newcommand{\PlotStepsSemiLogScaleY}[8]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8}{ \AddSteps{#1}{#4} } }
 
 %% --------------------------------------------------
 %% Add data lines with marker labels
@@ -437,10 +479,42 @@
 %% 7 - Y-axis label
 %% 8 - Y-axis units
 %% 9 - marker labels
-\newcommand{\PlotLabelledDataLine}[9]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8} { \AddDataLines{#1}{#4} #9 \relax } }
-\newcommand{\PlotLabelledDataLineLogLogScale}[9]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8} { \AddDataLines{#1}{#4} #9 \relax } }
-\newcommand{\PlotLabelledDataLineSemiLogScaleX}[9]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataLines{#1}{#4} #9 \relax } }
-\newcommand{\PlotLabelledDataLineSemiLogScaleY}[9]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataLines{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledLine}[9]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8} { \AddLines{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledLineLogLogScale}[9]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8} { \AddLines{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledLineSemiLogScaleX}[9]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8} { \AddLines{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledLineSemiLogScaleY}[9]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8} { \AddLines{#1}{#4} #9 \relax } }
+
+%% --------------------------------------------------
+%% Add data boxes with marker labels
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+%% 9 - marker labels
+\newcommand{\PlotLabelledBoxes}[9]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8} { \AddBoxes{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledBoxesLogLogScale}[9]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8} { \AddBoxes{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledBoxesSemiLogScaleX}[9]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8} { \AddBoxes{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledBoxesSemiLogScaleY}[9]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8} { \AddBoxes{#1}{#4} #9 \relax } }
+
+%% --------------------------------------------------
+%% Add data steps with marker labels
+%% 1 - data file name
+%% 2 - reference label
+%% 3 - caption
+%% 4 - legend entry
+%% 5 - X-axis label
+%% 6 - X-axis units
+%% 7 - Y-axis label
+%% 8 - Y-axis units
+%% 9 - marker labels
+\newcommand{\PlotLabelledSteps}[9]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8} { \AddSteps{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledStepsLogLogScale}[9]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8} { \AddSteps{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledStepsSemiLogScaleX}[9]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8} { \AddSteps{#1}{#4} #9 \relax } }
+\newcommand{\PlotLabelledStepsSemiLogScaleY}[9]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8} { \AddSteps{#1}{#4} #9 \relax } }
 
 %% --------------------------------------------------
 %% Add data points with smooth line and vertical marker
@@ -453,10 +527,10 @@
 %% 7 - Y-axis label
 %% 8 - Y-axis units
 %% 9 - marker labels
-\newcommand{\PlotSmoothLabelledDataPoints}[9]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
-\newcommand{\PlotSmoothLabelledDataPointsLogLogScale}[9]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
-\newcommand{\PlotSmoothLabelledDataPointsSemiLogScaleX}[9]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
-\newcommand{\PlotSmoothLabelledDataPointsSemiLogScaleY}[9]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
+\newcommand{\PlotSmoothLabelledPoints}[9]             { \PlotCollection             {#2}{#3}{#5}{#6}{#7}{#8} { \AddPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
+\newcommand{\PlotSmoothLabelledPointsLogLogScale}[9]  { \PlotCollectionLogLogScale  {#2}{#3}{#5}{#6}{#7}{#8} { \AddPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
+\newcommand{\PlotSmoothLabelledPointsSemiLogScaleX}[9]{ \PlotCollectionSemiLogScaleX{#2}{#3}{#5}{#6}{#7}{#8} { \AddPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
+\newcommand{\PlotSmoothLabelledPointsSemiLogScaleY}[9]{ \PlotCollectionSemiLogScaleY{#2}{#3}{#5}{#6}{#7}{#8} { \AddPoints{#1}{#4} \AddThreePointMeanThresholdSmoothing{#1}{#4}{80} #9 \relax } }
 
 %% --------------------------------------------------
 %% Plot linear regression of csv file data.
@@ -470,9 +544,9 @@
 %% 8 - Y-axis units
 
 % fit y(x) = a x
-\newcommand{\PlotOneParameterLinearRegression}[8] {\PlotCollection{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddOneParameterLinearRegression{#1} } }
+\newcommand{\PlotOneParameterLinearRegression}[8] {\PlotCollection{#2}{#3}{#5}{#6}{#7}{#8} { \AddPoints{#1}{#4} \AddOneParameterLinearRegression{#1} } }
 % fit y(x) = a x + b
-\newcommand{\PlotTwoParameterLinearRegression}[8] {\PlotCollection{#2}{#3}{#5}{#6}{#7}{#8} { \AddDataPoints{#1}{#4} \AddTwoParameterLinearRegression{#1} } }
+\newcommand{\PlotTwoParameterLinearRegression}[8] {\PlotCollection{#2}{#3}{#5}{#6}{#7}{#8} { \AddPoints{#1}{#4} \AddTwoParameterLinearRegression{#1} } }
 
 %% ----------------------------------------------------------------------------------------------------
 % Tabulated Data
