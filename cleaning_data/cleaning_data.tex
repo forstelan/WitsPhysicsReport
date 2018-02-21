@@ -1,0 +1,121 @@
+\documentclass[10pt, a4paper, oneside]{article}
+%------------------------------------------------------------
+% Using WitsPhysicsReport style
+\usepackage{style/WitsPhysicsReport}
+
+%------------------------------------------------------------
+% Source Code Markup
+\usepackage{textcomp}
+\usepackage[formats]{listings}
+\lstloadlanguages{[LaTeX]{TeX}}
+
+% source code placeholed markup
+\def\placeholder{\color{RubineRed}\textlangle\bgroup\it\aftergroup\endplaceholder}
+\def\endplaceholder{\textrangle\egroup}
+
+% general markup options
+\lstset{%
+    backgroundcolor = \color{gray!10}, %
+    basicstyle = \footnotesize\upshape\ttfamily, %
+    breakatwhitespace = true, %
+    tabsize = 4, %
+    upquote = true, %
+    }
+
+%------------------------------------------------------------
+% Name convenience commands
+\newcommand{\WitsPhysicsReport}{\textrm{\textsc{WitsPhysicsReport}}\,}
+
+%------------------------------------------------------------
+% Document details
+\author{Warren~A.~Carlson}
+\title{XRD Data File Preparation}
+
+% ------------------------------------------------------------
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\par{Some important aspects of working physics require the cleaning, preprocessing and analysis of experimental data.  Analysing data can be significantly more difficult if the data set under study is in a format that is difficult or inconvenient to use or understand.  This note describes the cleaning and preprocessing of experimental data taken during an X-ray diffraction experiment in the third year student laboratory in the \School{} at the University of the Witwatersrand.}
+
+\par{The data readout system for the X-ray diffration experiment provides raw data in machine readable, binary format.  This data is then repackaged in the human readable \lstinline{.UDF} file format.  While this format is useful when storing large sets of simple data, it is cumbersome to work with when not using software which accepts this file format.  An example of the contents of a \lstinline{.UDF} file is shown below.}
+
+\begin{lstlisting}
+SampleIdent,HBN2,/
+Title1,b4c,/
+Title2,b4c,/
+DiffrType,PW1710,/
+DiffrNumber,1,/
+Anode,Cu,/
+LabdaAlpha1, 1.54056,/
+LabdaAlpha2, 1.54439,/
+RatioAlpha21, 0.50000,/
+DivergenceSlit,Fixed,1,/
+ReceivingSlit,0.2,/
+MonochromatorUsed,NO  ,/
+GeneratorVoltage,  40,/
+TubeCurrent,  20,/
+FileDateTime,22-Feb-2012 10:44,/
+DataAngleRange,  20.0100,  99.9900,/
+ScanStepSize,   0.020,/
+ScanType,CONTINUOUS,/
+ScanStepTime,    1.00,/
+RawScan
+19,      19,      25,      18,      28,      23,      21,      32
+23,      13,      22,      30,      19,      32,      29,      21
+30,      25,      18,      28,      25,      30,      25,      25
+24,      37,      25,      20,      25,      23,      32,      27
+30,      19,      28,      27,      19,      25,      18,      25
+19,      20,      36,      25,      32,      14,      21,      30
+37,      35,      22,      19,      36,      18,      26,      19
+29,      27,      30,      30,      36,      23,      31,      26
+19,      31,      31,      27,      26,      31,      23,      32
+20,      26,      22,      28,      26,      28,      31,      27
+20,      18,      28,      17,      26,      28,      30,      32
+27,      20,      31,      29,      29,      38,      22,      23
+\end{lstlisting}
+
+\par{The structure of a \lstinline{.UDF} file can be understood as follows. Each \lstinline{.UDF} file has two components, a meta-data component and a raw data component. The meta data component stores information such as the apparatus settings, dates, times, and so on. The meta-data components is written to the beginning of the file and is stored as a collection of key-value pairs. These key-value pairs are stored, one pair per line, as a character string and a tuple of one or more comma separated values. Each line with a key-value pair has a \lstinline{/} character end of line marker. The end of the meta-data component is marked with the \lstinline{RawScan} keyword.  Following this, raw data measurements are stored as a linear sequence of comma separated integer values with null end of line termination characters.  This sequence is stored in rows of eight numbers.}
+
+\par{The form of the data in a \lstinline{.UDF} file can be understood as follows, the \lstinline{DataAngleRange} meta-data parameter is stored with two numerical values. These values specify lower and upper bound on the angular range scanned by the apparatus. Together, these values specify the angular parameter domain on which data is measured. This is paired with an increment size denoting the discrete step-size used to traverse this domain. This increment size in stored in the \lstinline{ScanStepSize} meta-data key-value pair.  Each value in raw data component which appears after the \lstinline{RawScan} keyword corresponds to a unique angular value on the parameter domain.  In this way the $n$-th value in the raw data is associated with the $n$-th increment on the scan domain.}
+
+\par{It is useful to repackage the data stored in a \lstinline{.UDF} into a data-file comprising two comma separated columns. These columns specify measuremnt $(x, y)$ value pairs.  Once the \lstinline{DataAngleRange} and \lstinline{ScanStepSize} values are known, then a sequence of $x$ values may be generated by incrementing the minimum value of the \lstinline{DataAngleRange} parameter by the value stored in \lstinline{ScanStepSize} up to the maximum value and storing these values as a column of values in a separate text file. The $y$ vales are obtained by reformatting of the raw data, and applying some simple string replacements to the \lstinline{.UDF} to produce a single columns of values (without the null end of line and non-printing characters).  The $x$ and $y$ values may be stored as $(x, y)$ values pairs by joining these columns as a comma separated set.  This procedure can be performed using a variety of software packages. }
+
+\par{Below is the contents of the first few lines of the file \lstinline{raw-y.dat} containing the raw $y$ values of \lstinline{.UDF} file above.}
+
+\begin{lstlisting}
+19
+19
+25
+18
+28
+23
+\end{lstlisting}
+
+\par{Given this file \lstinline{raw-y.dat} the following \lstinline{octave} may be used to generate a new file named \lstinline{cleaned-x-y.csv}. \emph{Note:} the values specifying the $x$-range are read from the \lstinline{DataAngleRange} and \lstinline{ScanStepSize} meta-data values and are entered as $x_{min}:x_{step}:x_{max}$.}
+
+\begin{lstlisting}
+x = 20.01:0.02:99.99;
+y = csvread("raw-y.dat");
+pairs = [x', y];
+csvwrite("cleaned-x-y.csv", pairs);
+\end{lstlisting}
+
+\par{The first few lines of the output file \lstinline{"cleaned-x-y.csv"} appear below.}
+\begin{lstlisting}
+20.01,19
+20.03,19
+20.05,25
+20.07,18
+20.09,28
+20.11,23
+\end{lstlisting}
+
+\par{The file \lstinline{cleaned-x-y.csv} may now be used by a variety of utilities, on a variety of computing systems. \emph{Note:} this precedure is easily replicated in other languages, using other software, and in different envirenments.}
+
+\end{document}
+
+%% --------------------------------------------------
+%% EOF
